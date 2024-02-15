@@ -8,5 +8,15 @@
   <body>
     <h1>Home</h1>
     <p>Username: <%= user.username %>, Password: <%= user.password %></p>
+    <form action="/home" method="post">
+      <label for="document">Choose a document:</label>
+      
+      <select name="document" id="document">
+        <% docs.forEach(e => { %>  
+          <option value="<%= e.id %>"><%= e.title %></option>
+        <% }); %>
+      </select>
+      <input type="submit" value="Submit">      
+    </form>
   </body>
 </html>

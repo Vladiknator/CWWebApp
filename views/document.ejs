@@ -13,8 +13,11 @@
       });
     </script>
     <form action="/document" method="post">
-      <input type="text" name="Title" id="Title" placeholder="Title" /> <br />
-      <textarea name="editor" id="mytextarea"></textarea>
+      <% if (locals.doc) { %>
+        <input type="hidden" name="id" value="<%= doc.id %>">
+      <% } %>
+      <input type="text" name="Title" id="Title" placeholder="Title" value="<%= locals.doc ? doc.title : '' %>" /> <br />
+      <textarea name="editor" id="mytextarea"><%= locals.doc ? doc.body : '' %></textarea>
       <button type="submit">Submit</button>
     </form>
   </body>

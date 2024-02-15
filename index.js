@@ -56,8 +56,16 @@ app.get('/signup', (req, res) => {
   res.send('Hello World!');
 });
 
-app.get('/home', (req, res) => {
-  res.render('home', { user });
+app.get('/home', async (req, res) => {
+  const docs = await doSQL('select title, id from docs');
+  console.log(docs.rows);
+  res.render('home', { user, docs: docs.rows });
+});
+
+app.post('/home', async (req, res) => {
+  const id = req.body.document;
+  const doc = await doSQL('select * from docs where id=$1', [id]);
+  res.render('document', { doc: doc.rows[0] });
 });
 
 app.get('/document', (req, res) => {
@@ -67,7 +75,19 @@ app.get('/document', (req, res) => {
 app.post('/document', async (req, res) => {
   const title = req.body.Title;
   const body = req.body.editor;
-  await doSQL('Insert into docs (title, body) values ($1, $2)', [title, body]);
+  const { id } = req.body;
+  if (id) {
+    await doSQL('update docs set title=$1, body=$2 where id=$3', [
+      title,
+      body,
+      id,
+    ]);
+  } else {
+    await doSQL('Insert into docs (title, body) values ($1, $2)', [
+      title,
+      body,
+    ]);
+  }
   res.redirect('/');
 });
 
