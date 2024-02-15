@@ -53,7 +53,17 @@ app.post('/login', (req, res) => {
 });
 
 app.get('/signup', (req, res) => {
-  res.send('Hello World!');
+  res.render('signup');
+});
+
+app.post('/signup', async (req, res) => {
+  const { username } = req.body;
+  const { password } = req.body;
+  await doSQL('Insert into users (username, password) values ($1, $2)', [
+    username,
+    password,
+  ]);
+  res.redirect('/login');
 });
 
 app.get('/home', async (req, res) => {
