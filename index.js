@@ -107,6 +107,12 @@ app.post('/home', async (req, res) => {
   res.render('document', { doc: doc.rows[0] });
 });
 
+app.post('/createprojs', async (req, res) => {
+  const title = req.body.title;
+  await doSQL('Insert into projects (title, user_id) values ($1, $2)', [title, req.session.id]);
+  res.redirect('/home');
+});
+
 app.get('/document', (req, res) => {
   res.render('document');
 });
