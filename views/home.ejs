@@ -16,7 +16,11 @@
           <option value="<%= e.id %>"><%= e.title %></option>
         <% }); %>
       </select>
-      <input type="submit" value="Submit">      
+      <input type="submit" value="Submit">   
+    </form>
+     
+    <form action="/logout" method="post">
+      <input type ="submit" value="Logout">
     </form>
   </body>
 </html>

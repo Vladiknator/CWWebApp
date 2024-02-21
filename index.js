@@ -83,14 +83,22 @@ app.post('/signup', async (req, res) => {
   res.redirect('/login');
 });
 
+app.post('/logout', (req, res) => {
+  req.session = null;
+  res.redirect('/login'); 
+});
+
 app.get('/home', async (req, res) => {
   const userID = req.session.id;
   const projs = await doSQL(
     'select title, id from projects where user_id = $1',
     [userID],
   );
-  console.log(projs.rows);
-  res.render('home', { user: req.session.username, projs: projs.rows });
+  if (req.session.id === undefined) {
+    res.redirect('/login');
+  }
+  else{
+    res.render('home', { user: req.session.username, projs: projs.rows });}
 });
 
 app.post('/home', async (req, res) => {
