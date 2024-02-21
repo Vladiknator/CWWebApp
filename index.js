@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import pg from 'pg';
+import cookieSession from 'cookie-session';
 
 const app = express();
 const port = 3000;
@@ -14,6 +15,16 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/public', express.static(path.join(process.cwd(), 'public')));
+
+app.use(
+  cookieSession({
+    name: 'session',
+    keys: ['id', 'username'],
+
+    // Cookie Options
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+  }),
+);
 
 async function doSQL(statement, params) {
   const client = new pg.Client({
@@ -34,8 +45,6 @@ app.use(
   express.static(path.join(__dirname, 'node_modules', 'tinymce')),
 );
 
-const user = {};
-
 app.get('/', (req, res) => {
   res.render('index', { date: new Date() });
 });
@@ -44,12 +53,20 @@ app.get('/login', (req, res) => {
   res.render('login');
 });
 
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
   const { username } = req.body;
   const { password } = req.body;
-  user.username = username;
-  user.password = password;
-  res.redirect('/home');
+  const result = await doSQL(
+    'select * from users where username = $1 and password = $2',
+    [username, password],
+  );
+  if (result.rows.length === 1) {
+    req.session.id = result.rows[0].id;
+    req.session.username = result.rows[0].username;
+    res.redirect('/home');
+  } else {
+    res.render('/login', { error: 'Incorrect login information' });
+  }
 });
 
 app.get('/signup', (req, res) => {
@@ -67,9 +84,13 @@ app.post('/signup', async (req, res) => {
 });
 
 app.get('/home', async (req, res) => {
-  const docs = await doSQL('select title, id from docs');
-  console.log(docs.rows);
-  res.render('home', { user, docs: docs.rows });
+  const userID = req.session.id;
+  const projs = await doSQL(
+    'select title, id from projects where user_id = $1',
+    [userID],
+  );
+  console.log(projs.rows);
+  res.render('home', { user: req.session.username, projs: projs.rows });
 });
 
 app.post('/home', async (req, res) => {

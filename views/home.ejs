@@ -7,12 +7,12 @@
   </head>
   <body>
     <h1>Home</h1>
-    <p>Username: <%= user.username %>, Password: <%= user.password %></p>
+    <p>Username: <%= user %></p>
     <form action="/home" method="post">
-      <label for="document">Choose a document:</label>
+      <label for="document">Choose a project:</label>
       
       <select name="document" id="document">
-        <% docs.forEach(e => { %>  
+        <% projs.forEach(e => { %>  
           <option value="<%= e.id %>"><%= e.title %></option>
         <% }); %>
       </select>
