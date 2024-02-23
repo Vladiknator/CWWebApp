@@ -9,9 +9,9 @@
     <h1>Home</h1>
     <p>Username: <%= user %></p>
     <form action="/home" method="post">
-      <label for="document">Choose a project:</label>
+      <label for="project">Choose a project:</label>
       
-      <select name="document" id="document">
+      <select name="project" id="project">
         <% projs.forEach(e => { %>  
           <option value="<%= e.id %>"><%= e.title %></option>
         <% }); %>

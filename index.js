@@ -19,7 +19,7 @@ app.use('/public', express.static(path.join(process.cwd(), 'public')));
 app.use(
   cookieSession({
     name: 'session',
-    keys: ['id', 'username'],
+    keys: ['id', 'username', 'currentProj'],
 
     // Cookie Options
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
@@ -85,7 +85,7 @@ app.post('/signup', async (req, res) => {
 
 app.post('/logout', (req, res) => {
   req.session = null;
-  res.redirect('/login'); 
+  res.redirect('/login');
 });
 
 app.get('/home', async (req, res) => {
@@ -96,25 +96,55 @@ app.get('/home', async (req, res) => {
   );
   if (req.session.id === undefined) {
     res.redirect('/login');
+  } else {
+    res.render('home', { user: req.session.username, projs: projs.rows });
   }
-  else{
-    res.render('home', { user: req.session.username, projs: projs.rows });}
 });
 
 app.post('/home', async (req, res) => {
+  const id = req.body.project;
+  // const doc = await doSQL('select * from docs where id=$1', [id]);
+  // res.render('document', { doc: doc.rows[0] });
+  req.session.currentProj = id;
+  res.redirect(`/project/${id}`);
+});
+
+app.get('/project/:projId', async (req, res) => {
+  const { projId } = req.params;
+  const result = await doSQL(
+    'select * from projects where user_id = $1 and id = $2',
+    [req.session.id, projId],
+  );
+  if (result.rows.length === 0) {
+    res.redirect('/home');
+  } else {
+    const docs = await doSQL('select * from docs where proj_id = $1', [projId]);
+    res.render('project', { docs: docs.rows });
+  }
+});
+
+app.post('/project', async (req, res) => {
   const id = req.body.document;
   const doc = await doSQL('select * from docs where id=$1', [id]);
   res.render('document', { doc: doc.rows[0] });
 });
 
 app.post('/createprojs', async (req, res) => {
-  const title = req.body.title;
-  await doSQL('Insert into projects (title, user_id) values ($1, $2)', [title, req.session.id]);
+  const { title } = req.body;
+  await doSQL('Insert into projects (title, user_id) values ($1, $2)', [
+    title,
+    req.session.id,
+  ]);
   res.redirect('/home');
 });
 
-app.get('/document', (req, res) => {
-  res.render('document');
+app.post('/createdocs', async (req, res) => {
+  const { title } = req.body;
+  await doSQL('Insert into docs (title, proj_id) values ($1, $2)', [
+    title,
+    req.session.currentProj,
+  ]);
+  res.redirect(`/project/${req.session.currentProj}`);
 });
 
 app.post('/document', async (req, res) => {
@@ -133,7 +163,7 @@ app.post('/document', async (req, res) => {
       body,
     ]);
   }
-  res.redirect('/');
+  res.redirect(`/project/${req.session.currentProj}`);
 });
 
 app.listen(port, () => {
