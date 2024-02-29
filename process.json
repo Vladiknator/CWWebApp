@@ -1,8 +1,8 @@
 {
   "apps": [
     {
-      "name": "api",
-      "script": "./bin/www",
+      "name": "cwwebapp",
+      "script": "index.js",
       "merge_logs": true,
       "max_restarts": 20,
       "instances": 4,
