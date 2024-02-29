@@ -6,7 +6,7 @@ import pg from 'pg';
 import cookieSession from 'cookie-session';
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -31,8 +31,8 @@ async function doSQL(statement, params) {
     host: 'localhost',
     port: 5432,
     database: 'creativewriting',
-    user: 'postgres',
-    password: 'password',
+    user: process.env.DBUSER,
+    password: process.env.DBPASS,
   });
   await client.connect();
   const response = await client.query(statement, params);
