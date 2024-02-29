@@ -10,6 +10,9 @@ COPY package.json package-lock.json ./
 # Install dependencies
 RUN npm install
 
+# Install PM2
+RUN npm install pm2 -g
+
 # Copy the rest of project files into this image
 COPY . .
 
@@ -17,4 +20,4 @@ COPY . .
 EXPOSE 3000
 
 # Start the application
-CMD npm start
+CMD ["pm2-runtime", "process.json"]
