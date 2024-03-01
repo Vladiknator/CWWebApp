@@ -28,7 +28,7 @@ app.use(
 
 async function doSQL(statement, params) {
   const client = new pg.Client({
-    host: 'localhost',
+    host: process.env.DBID,
     port: 5432,
     database: 'creativewriting',
     user: process.env.DBUSER,
