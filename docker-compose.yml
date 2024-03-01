@@ -7,7 +7,7 @@ services:
     environment:
       - DBUSER=postgres
       - DBPASS=postgres
-      - DBIP=172.19.0.1
+      - DBIP=postgres://db
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
