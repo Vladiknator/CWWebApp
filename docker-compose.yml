@@ -4,7 +4,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: node:16-alpine
     container_name: application
     environment:
       - DBUSER=postgres
@@ -18,7 +17,7 @@ services:
     networks:
       - app-network
   db:
-    image: postgres
+    image: postgres:alpine
     container_name: db
     environment:
       POSTGRES_USER: postgres
@@ -28,7 +27,6 @@ services:
       - ./DatabaseDevScript.sql:/docker-entrypoint-initdb.d/DatabaseDevScript.sql
     networks:
       - app-network
-    command: -p 5432
 
 networks:
   app-network:
