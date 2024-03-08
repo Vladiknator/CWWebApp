@@ -19,7 +19,7 @@ app.use('/public', express.static(path.join(process.cwd(), 'public')));
 app.use(
   cookieSession({
     name: 'session',
-    keys: ['id', 'username', 'currentProj'],
+    keys: ['id', 'username', 'currentProj', 'message'],
 
     // Cookie Options
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
@@ -50,7 +50,13 @@ app.get('/', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-  res.render('login');
+  if (req.session.message) {
+    const { message } = req.session;
+    req.session.message = undefined;
+    res.render('login', { error: message });
+  } else {
+    res.render('login');
+  }
 });
 
 app.post('/login', async (req, res) => {
@@ -65,7 +71,7 @@ app.post('/login', async (req, res) => {
     req.session.username = result.rows[0].username;
     res.redirect('/home');
   } else {
-    res.render('/login', { error: 'Incorrect login information' });
+    res.render('login', { error: 'Incorrect login information' });
   }
 });
 
@@ -76,11 +82,18 @@ app.get('/signup', (req, res) => {
 app.post('/signup', async (req, res) => {
   const { username } = req.body;
   const { password } = req.body;
-  await doSQL('Insert into users (username, password) values ($1, $2)', [
-    username,
-    password,
-  ]);
-  res.redirect('/login');
+  const { email } = req.body;
+  const { password2 } = req.body;
+  if (password === password2) {
+    await doSQL(
+      'Insert into users (username, password, email) values ($1, $2, $3)',
+      [username, password, email],
+    );
+    req.session.message = 'Account Creation Successful';
+    res.redirect('/login');
+  } else {
+    res.render('signup', { error: 'Error: Passwords do not match' });
+  }
 });
 
 app.post('/logout', (req, res) => {
