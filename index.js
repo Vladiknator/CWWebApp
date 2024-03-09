@@ -132,14 +132,23 @@ app.get('/project/:projId', async (req, res) => {
     res.redirect('/home');
   } else {
     const docs = await doSQL('select * from docs where proj_id = $1', [projId]);
-    res.render('project', { docs: docs.rows });
+    const colls = await doSQL('select * from collections where proj_id = $1', [
+      projId,
+    ]);
+    res.render('project', { docs: docs.rows, colls: colls.rows });
   }
 });
 
-app.post('/project', async (req, res) => {
+app.post('/selectdocument', async (req, res) => {
   const id = req.body.document;
   const doc = await doSQL('select * from docs where id=$1', [id]);
   res.render('document', { doc: doc.rows[0] });
+});
+
+app.post('/selectcollection', async (req, res) => {
+  const id = req.body.collection;
+  const doc = await doSQL('select * from docs where id=$1', [id]);
+  res.render();
 });
 
 app.post('/createprojs', async (req, res) => {
@@ -154,6 +163,15 @@ app.post('/createprojs', async (req, res) => {
 app.post('/createdocs', async (req, res) => {
   const { title } = req.body;
   await doSQL('Insert into docs (title, proj_id) values ($1, $2)', [
+    title,
+    req.session.currentProj,
+  ]);
+  res.redirect(`/project/${req.session.currentProj}`);
+});
+
+app.post('/createcollection', async (req, res) => {
+  const { title } = req.body;
+  await doSQL('Insert into collections (title, proj_id) values ($1, $2)', [
     title,
     req.session.currentProj,
   ]);
