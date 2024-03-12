@@ -151,7 +151,7 @@ app.post('/selectcollection', async (req, res) => {
   // format - cid, ctitle, proj_id, nid, ntitle, alias, note
   const coll = await doSQL(
     `select c.id as cid, c.title as ctitle, c.proj_id, n.id as nid, n.title as ntitle, n.alias, n.note 
-	    from collections c join notes n on c.id = n.coll_id 
+	    from collections c left join notes n on c.id = n.coll_id 
 	    where c.id=$1;`,
     [id],
   );
@@ -201,6 +201,22 @@ app.post('/document', async (req, res) => {
       body,
     ]);
   }
+  res.redirect(`/project/${req.session.currentProj}`);
+});
+
+app.post('/collection', async (req, res) => {
+  console.log('Collection Submitted');
+  console.log(req.body);
+  const title = req.body.Title;
+  const body = req.body.editor;
+  const { id } = req.body;
+
+  // await doSQL('update docs set title=$1, body=$2 where id=$3', [
+  //   title,
+  //   body,
+  //   id,
+  // ]);
+
   res.redirect(`/project/${req.session.currentProj}`);
 });
 
