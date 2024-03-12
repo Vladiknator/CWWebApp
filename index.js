@@ -147,8 +147,15 @@ app.post('/selectdocument', async (req, res) => {
 
 app.post('/selectcollection', async (req, res) => {
   const id = req.body.collection;
-  const doc = await doSQL('select * from docs where id=$1', [id]);
-  res.render();
+  // note on select return
+  // format - cid, ctitle, proj_id, nid, ntitle, alias, note
+  const coll = await doSQL(
+    `select c.id as cid, c.title as ctitle, c.proj_id, n.id as nid, n.title as ntitle, n.alias, n.note 
+	    from collections c join notes n on c.id = n.coll_id 
+	    where c.id=$1;`,
+    [id],
+  );
+  res.render('collection', { coll: coll.rows });
 });
 
 app.post('/createprojs', async (req, res) => {
