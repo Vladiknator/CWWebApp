@@ -15,3 +15,62 @@ const noteConfig = {
 
 // eslint-disable-next-line no-undef
 tinymce.init(noteConfig);
+
+function newEntry() {
+  const container = document.getElementById('entryContainer');
+  const count = container.getElementsByClassName('entry').length + 1;
+
+  const entryDiv = document.createElement('div');
+  entryDiv.className = 'entry';
+
+  const table = document.createElement('table');
+  entryDiv.appendChild(table);
+
+  const titles = ['Entry Title:', 'Aliases:', 'Notes:'];
+  const ids = [`etitle${count}`, `ealias${count}`, `notes${count}`];
+
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < titles.length; i++) {
+    const tr = document.createElement('tr');
+    table.appendChild(tr);
+
+    const td1 = document.createElement('td');
+    const label = document.createElement('label');
+    label.setAttribute('for', ids[i]);
+    label.textContent = titles[i];
+    td1.appendChild(label);
+    tr.appendChild(td1);
+
+    const td2 = document.createElement('td');
+    if (i < 2) {
+      // For 'Entry Title:' and 'Aliases:'
+      const input = document.createElement('input');
+      input.id = ids[i];
+      input.name = ids[i];
+      input.type = 'text';
+      td2.appendChild(input);
+    } else {
+      // For 'Notes:'
+      td2.className = 'absorb';
+      const div = document.createElement('div');
+      div.className = 'tinymce-body';
+      div.id = ids[i];
+      td2.appendChild(div);
+    }
+    tr.appendChild(td2);
+  }
+
+  container.appendChild(entryDiv);
+
+  const newConfig = noteConfig;
+  newConfig.selector = `#notes${count}`;
+
+  // eslint-disable-next-line no-undef
+  tinymce.init(newConfig);
+}
+
+// eslint-disable-next-line no-unused-vars
+function deleteEntry(i) {
+  const entry = document.getElementsByClassName('entry')[i - 1];
+  entry.remove();
+}

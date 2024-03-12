@@ -205,17 +205,34 @@ app.post('/document', async (req, res) => {
 });
 
 app.post('/collection', async (req, res) => {
-  console.log('Collection Submitted');
-  console.log(req.body);
-  const title = req.body.Title;
-  const body = req.body.editor;
-  const { id } = req.body;
+  const { title } = req.body;
+  const id = req.body.collID;
 
-  // await doSQL('update docs set title=$1, body=$2 where id=$3', [
-  //   title,
-  //   body,
-  //   id,
-  // ]);
+  // Loop through all entries returned in the body, seperate them into individual objects and put them into the entries array
+  const entries = [];
+  const bodyValues = Object.entries(req.body);
+  bodyValues.splice(0, 2);
+  console.log(req.body);
+  for (let index = 0; index < bodyValues.length; index += 3) {
+    const obj = {
+      title: bodyValues[index][1],
+      alias: bodyValues[index + 1][1],
+      notes: bodyValues[index + 2][1],
+    };
+    entries.push(obj);
+  }
+
+  console.log(entries);
+
+  await doSQL('update collections set title=$1 where id=$2', [title, id]);
+
+  await doSQL('delete from notes where coll_id = $1', [id]);
+  entries.forEach(async (e) => {
+    await doSQL(
+      'insert into notes (title, alias, note, coll_id) Values ($1, $2, $3, $4)',
+      [e.title, e.alias, e.notes, id],
+    );
+  });
 
   res.redirect(`/project/${req.session.currentProj}`);
 });
