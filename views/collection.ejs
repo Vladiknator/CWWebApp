@@ -19,39 +19,42 @@
     <input id="title" name="title" type="text" value="<%= coll[0].ctitle %>"> <br>
     <input type="hidden" name="collID" value="<%= coll[0].cid %>">
     <h3>Entries:</h3>
-    <% let counter = 1%>
-    <% coll.forEach ( (e) => {  %>
-
-    <div class="entry">
-      <table>
-        <tr>
-          <td>
-            <label for="etitle<%= counter %>">Entry Title:</label>
-          </td>
-          <td>
-            <input id="etitle<%= counter %>" name="etitle<%= counter %>" type="text" value="<%= e.ntitle %>">
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <label for="ealias<%= counter %>">Aliases:</label>
-          </td>
-          <td>
-            <input id="ealias<%= counter %>" name="ealias<%= counter %>" type="text" value="<%= e.alias %>">
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <label for="notes<%= counter %>">Notes:</label>
-          </td>
-          <td class="absorb">
-            <div class="tinymce-body" id="notes<%= counter %>"><%- e.note %></div>
-          </td>
-        </tr>
-      </table>
+    <div id="entryContainer">
+      <% let counter = 1%>
+      <% coll.forEach ( (e) => {  %>
+      <div class="entry">
+        <table>
+          <tr>
+            <td>
+              <label for="etitle<%= counter %>">Entry Title:</label>
+            </td>
+            <td>
+              <input id="etitle<%= counter %>" name="etitle<%= counter %>" type="text" value="<%= e.ntitle %>">
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="ealias<%= counter %>">Aliases:</label>
+            </td>
+            <td>
+              <input id="ealias<%= counter %>" name="ealias<%= counter %>" type="text" value="<%= e.alias %>">
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="notes<%= counter %>">Notes:</label>
+            </td>
+            <td class="absorb">
+              <div class="tinymce-body" id="notes<%= counter %>"><%- e.note %></div>
+            </td>
+          </tr>
+        </table>
+        <button type="button" onclick="deleteEntry( <%= counter %> )">Delete entry</button>
+      </div>
+      <% counter ++ %>
+      <% }); %>
     </div>
-    <% counter ++ %>
-    <% }); %>
+    <button type="button" onclick="newEntry()">Create New Entry</button>
     <input type="submit" value="Submit">
   </form>
 

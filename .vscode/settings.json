@@ -3,5 +3,9 @@
   "editor.tabSize": 2,
   "[html]": {
     "editor.defaultFormatter": "j69.ejs-beautify"
+  },
+  "color-highlight.languages": ["*"],
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }
