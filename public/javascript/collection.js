@@ -18,10 +18,18 @@ tinymce.init(noteConfig);
 
 function newEntry() {
   const container = document.getElementById('entryContainer');
-  const count = container.getElementsByClassName('entry').length + 1;
+  const entries = container.getElementsByClassName('entry');
+  const lastEntry = entries[entries.length - 1];
+  let count;
+  try {
+    count = parseInt(lastEntry.id.substring(5)) + 1;
+  } catch (error) {
+    count = 1;
+  }
 
   const entryDiv = document.createElement('div');
   entryDiv.className = 'entry';
+  entryDiv.id = `entry${count}`;
 
   const table = document.createElement('table');
   entryDiv.appendChild(table);
@@ -60,6 +68,11 @@ function newEntry() {
     tr.appendChild(td2);
   }
 
+  const deleteButton = document.createElement('button');
+  deleteButton.textContent = 'Delete Entry';
+  deleteButton.onclick = () => deleteEntry(count); // Call deleteEntry() with the entry index
+  entryDiv.appendChild(deleteButton);
+
   container.appendChild(entryDiv);
 
   const newConfig = noteConfig;
@@ -71,6 +84,6 @@ function newEntry() {
 
 // eslint-disable-next-line no-unused-vars
 function deleteEntry(i) {
-  const entry = document.getElementsByClassName('entry')[i - 1];
+  const entry = document.getElementById(`entry${i}`);
   entry.remove();
 }

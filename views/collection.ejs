@@ -22,7 +22,7 @@
     <div id="entryContainer">
       <% let counter = 1%>
       <% coll.forEach ( (e) => {  %>
-      <div class="entry">
+      <div class="entry" id="entry<%= counter %>">
         <table>
           <tr>
             <td>
@@ -49,7 +49,7 @@
             </td>
           </tr>
         </table>
-        <button type="button" onclick="deleteEntry( <%= counter %> )">Delete entry</button>
+        <button type="button" onclick="deleteEntry( <%= counter %> )">Delete Entry</button>
       </div>
       <% counter ++ %>
       <% }); %>
