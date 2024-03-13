@@ -1,29 +1,86 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home</title>
-  </head>
-  <body>
-    <h1>Home</h1>
-    <p>Username: <%= user %></p>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home</title>
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .content-box {
+      width: 50%;
+      padding: 20px;
+      border: 1px solid #000;
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    header {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      text-align: center;
+      background-color: aquamarine;
+      padding: 10px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div style="float: right;">
+      Username: <%= user %>
+      <form action="/logout" method="post">
+        <input type ="submit" value="Logout">
+      </form>
+    </div>
+  </header>
+
+  <div class="content-box" id="defaultContent">
+    <button onclick="showCreateForm()">CREATE NEW</button>
+    <% if (projs && projs.length > 0) { %>
+      <button onclick="showExistingForm()">VIEW EXISTING PROJECTS</button>
+    <% } %>
+    </div>
+
+  <div id="createForm" style="display: none;">
+    <h1>Create New</h1>
+    <form action="/createprojs" method="post">
+      <input type="text" placeholder="Title" name="title">
+      <input type="submit" value="Create">
+    </form>
+    <form action="/home" method="=post">
+      <input type="submit" value="Back">
+    </form>
+  </div>
+
+  <div id="existingForm" style="display: none;">
+    <h1>Existing Projects</h1>
     <form action="/home" method="post">
-      <label for="project">Choose a project:</label>
-      
+      <label for="project">Choose a project:</label>  
       <select name="project" id="project">
         <% projs.forEach(e => { %>  
           <option value="<%= e.id %>"><%= e.title %></option>
         <% }); %>
       </select>
-      <input type="submit" value="Submit">   
+      <input type="submit" value="Submit"> 
+      
+    </form>  
+    <form action="/home" method="=post">
+      <input type="submit" value="Back">
     </form>
-    <form action="/logout" method="post">
-      <input type ="submit" value="Logout">
-    </form>
-    <form action="/createprojs" method="post">
-      <input type="text" placeholder="Title" name="title">
-      <input type="submit" value="Create Project">
-    </form>
-  </body>
+  </div>
+
+<script src="/public/javascript/home.js"></script>
+
+</body>
 </html>

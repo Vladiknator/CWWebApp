@@ -1,0 +1,22 @@
+.tinymce-body {
+  background-color: white;
+  white-space: normal;
+  border: solid 1px darkgray;
+}
+
+.entry > table {
+  table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+.absorb {
+  width: 100%;
+}
+
+.entry {
+  margin: 3rem;
+  background-color: lightgray;
+  padding: 1.5rem;
+}
