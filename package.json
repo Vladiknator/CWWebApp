@@ -1,48 +1,13 @@
 {
-  "name": "cwwebapp",
+  "name": "app.js",
   "version": "1.0.0",
-  "description": "A web app for efficient creative writing",
-  "main": "index.js",
-  "type": "module",
+  "description": "Description of your application",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "pm2": "pm2 start processes.json --no-daemon",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "start": "node index.js"
+    "start": "node app.js"
   },
-  "eslintConfig": {
-    "extends": [
-      "wesbos"
-    ],
-    "rules": {
-      "prettier/prettier": [
-        "error",
-        {
-          "singleQuote": true,
-          "endOfLine": "auto",
-          "tabWidth": 2,
-          "max_line_length": 120
-        }
-      ]
-    }
-  },
-  "eslintIgnore": [
-    "*.ejs"
-  ],
-  "author": "Writle Team",
-  "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.20.2",
-    "cookie-session": "^2.1.0",
-    "ejs": "^3.1.9",
-    "express": "^4.18.2",
-    "nodemon": "^3.0.3",
-    "pg": "^8.11.3",
-    "tinymce": "^6.8.3"
-  },
-  "devDependencies": {
-    "eslint": "^8.56.0",
-    "eslint-config-wesbos": "^4.0.1"
+    "cors": "^2.8.5",
+    "express": "^4.18.3"
   }
 }
