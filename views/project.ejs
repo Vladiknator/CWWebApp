@@ -1,28 +1,46 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-    <h1>Project</h1>
-    <form action="/project" method="post">
-      <label for="document">Choose a document:</label>
-      
-      <select name="document" id="document">
-        <% docs.forEach(e => { %>  
-          <option value="<%= e.id %>"><%= e.title %></option>
-        <% }); %>
-      </select>
-      <input type="submit" value="Submit">   
-    </form>
-    <form action="/createdocs" method="post">
-      <input type="text" placeholder="Title" name="title">
-      <input type="submit" value="Create Document">
-    </form>
-    <form action="/home" method="=post">
-      <input type="submit" value="Home">
-    </form>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+</head>
+
+<body>
+  <h1>Project</h1>
+  <form action="/selectdocument" method="post">
+    <label for="document">Choose a document:</label>
+
+    <select name="document" id="document">
+      <% docs.forEach(e => { %>
+      <option value="<%= e.id %>"><%= e.title %></option>
+      <% }); %>
+    </select>
+    <input type="submit" value="Submit">
+  </form>
+  <form action="/createdocs" method="post">
+    <input type="text" placeholder="Title" name="title">
+    <input type="submit" value="Create Document">
+  </form>
+  <br>
+  <form action="/selectcollection" method="post">
+    <label for="collection">Choose a collection:</label>
+
+    <select name="collection" id="collection">
+      <% colls.forEach(e => { %>
+      <option value="<%= e.id %>"><%= e.title %></option>
+      <% }); %>
+    </select>
+    <input type="submit" value="Submit">
+  </form>
+  <form action="/createcollection" method="post">
+    <input type="text" placeholder="Title" name="title">
+    <input type="submit" value="Create Collection">
+  </form>
+  <form action="/home" method="=post">
+    <input type="submit" value="Home">
+  </form>
+</body>
+
 </html>

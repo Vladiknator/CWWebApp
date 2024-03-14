@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/public/css/collection.css">
+  <title>Collection</title>
+</head>
+
+<body>
+
+  <script src="/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+  <script src="/public/javascript/collection.js"></script>
+  <h1>Note Collection</h1>
+
+  <form action="/collection" method="post">
+    <label for="title">Collection Title:</label>
+    <input id="title" name="title" type="text" value="<%= coll[0].ctitle %>"> <br>
+    <input type="hidden" name="collID" value="<%= coll[0].cid %>">
+    <h3>Entries:</h3>
+    <div id="entryContainer">
+      <% let counter = 1%>
+      <% coll.forEach ( (e) => {  %>
+      <div class="entry" id="entry<%= counter %>">
+        <table>
+          <tr>
+            <td>
+              <label for="etitle<%= counter %>">Entry Title:</label>
+            </td>
+            <td>
+              <input id="etitle<%= counter %>" name="etitle<%= counter %>" type="text" value="<%= e.ntitle %>">
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="ealias<%= counter %>">Aliases:</label>
+            </td>
+            <td>
+              <input id="ealias<%= counter %>" name="ealias<%= counter %>" type="text" value="<%= e.alias %>">
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="notes<%= counter %>">Notes:</label>
+            </td>
+            <td class="absorb">
+              <div class="tinymce-body" id="notes<%= counter %>"><%- e.note %></div>
+            </td>
+          </tr>
+        </table>
+        <button type="button" onclick="deleteEntry( <%= counter %> )">Delete Entry</button>
+      </div>
+      <% counter ++ %>
+      <% }); %>
+    </div>
+    <button type="button" onclick="newEntry()">Create New Entry</button>
+    <input type="submit" value="Submit">
+  </form>
+
+</body>
+
+</html>

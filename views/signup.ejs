@@ -1,16 +1,25 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sign Up</title>
 </head>
+
 <body>
   <h1>Sign Up</h1>
-  <form action="/signup" method="post">
-    <input type="text" name="username" id="username" placeholder="Username"> <br>
-    <input type="password" name="password" id="password" placeholder="Password"> <br>
-    <input type="submit" value="Submit">
+  <form action="/signup" method="post" autocomplete="off">
+    <input type="text" name="username" id="username" placeholder="Username" />
+    <br />
+    <input type="email" name="email" id="email" placeholder="Email" /> <br />
+    <input type="password" name="password" id="password" placeholder="Password" />
+    <br />
+    <input type="password" name="password2" id="password2" placeholder="Confirm Password" />
+    <br />
+    <input type="submit" value="Submit" />
   </form>
+  <p><%= locals.error ? error : '' %></p>
 </body>
+
 </html>
