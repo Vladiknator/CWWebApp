@@ -1,3 +1,4 @@
+// TinyMCE config
 const noteConfig = {
   selector: '.tinymce-body',
   menubar: false,
@@ -13,9 +14,11 @@ const noteConfig = {
   },
 };
 
+// initialize tinymce editors
 // eslint-disable-next-line no-undef
 tinymce.init(noteConfig);
 
+// Function to create a new entry on the web page when new entry button is pressed
 function newEntry() {
   const container = document.getElementById('entryContainer');
   const entries = container.getElementsByClassName('entry');
@@ -37,8 +40,7 @@ function newEntry() {
   const titles = ['Entry Title:', 'Aliases:', 'Notes:'];
   const ids = [`etitle${count}`, `ealias${count}`, `notes${count}`];
 
-  // eslint-disable-next-line no-plusplus
-  for (let i = 0; i < titles.length; i++) {
+  for (let i = 0; i < titles.length; i += 1) {
     const tr = document.createElement('tr');
     table.appendChild(tr);
 
@@ -82,6 +84,7 @@ function newEntry() {
   tinymce.init(newConfig);
 }
 
+// Function to delete entry
 // eslint-disable-next-line no-unused-vars
 function deleteEntry(i) {
   const entry = document.getElementById(`entry${i}`);
