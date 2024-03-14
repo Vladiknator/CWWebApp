@@ -167,6 +167,17 @@ app.post('/createprojs', async (req, res) => {
   res.redirect('/home');
 });
 
+app.post('/deleteProject', async (req, res) => {
+  const { projectId } = req.body;
+  try {
+    await doSQL('DELETE FROM projects WHERE id = $1', [projectId]);
+    res.redirect('/home');
+  } catch (error) {
+    console.error('Error deleting project:', error);
+    res.status(500).send('Failed to delete project');
+  }
+});
+
 app.post('/createdocs', async (req, res) => {
   const { title } = req.body;
   await doSQL('Insert into docs (title, proj_id) values ($1, $2)', [

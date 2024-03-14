@@ -73,8 +73,18 @@
         <% }); %>
       </select>
       <input type="submit" value="Submit"> 
-      
-    </form>  
+    </form>
+
+    <form action="/deleteProject" method="post">
+      <label for="deleteProject">Delete a project:</label>
+      <select name="projectId" id="deleteProject">
+        <% projs.forEach(e => { %>  
+          <option value="<%= e.id %>"><%= e.title %></option>
+        <% }); %>
+      </select>
+      <input type="submit" value="Submit">
+    </form>
+
     <form action="/home" method="=post">
       <input type="submit" value="Back">
     </form>
