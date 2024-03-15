@@ -1,8 +1,9 @@
-let noteJSON = [];
+let noteJSON;
 let collIndex = 0;
+const projId = document.getElementById('proj_id').value;
 
 async function getNotesData() {
-  const noteRawData = await fetch('notes/1');
+  const noteRawData = await fetch(`notes/${projId}`);
   noteJSON = await noteRawData.json();
   console.log(noteJSON);
   loadCollection(0);

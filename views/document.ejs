@@ -16,6 +16,7 @@
   </script>
   <form action="/document" method="post">
     <% if (locals.doc) { %>
+    <input type="hidden" id="proj_id" value="<%= doc.proj_id %>">
     <input type="hidden" name="id" value="<%= doc.id %>">
     <% } %>
     <input type="text" name="Title" id="Title" placeholder="Title" value="<%= locals.doc ? doc.title : '' %>" /> <br />
