@@ -234,6 +234,25 @@ app.post('/document', sessionCheck, async (req, res) => {
   res.redirect(`/project/${req.session.currentProj}`);
 });
 
+// API route to get notes and collections for a given page
+app.get('/notes/:projId', async (req, res) => {
+  const { projId } = req.params;
+  const colls = await doSQL('select * from collections where proj_id = $1', [
+    projId,
+  ]);
+  const notes = await doSQL(
+    'select n.id, n.title, alias, note, coll_id, proj_id  from notes n join collections c on n.coll_id = c.id where proj_id = $1',
+    [projId],
+  );
+  // map notes to correct collection and return a JSON object
+  const combined = colls.rows.map((coll) => ({
+    ...coll,
+    notes: notes.rows.filter((entry) => entry.coll_id === coll.id),
+  }));
+
+  res.json(combined);
+});
+
 // Update the values of a collection and its notes after editing
 app.post('/collection', sessionCheck, async (req, res) => {
   const { title } = req.body;

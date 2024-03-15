@@ -1,24 +1,35 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-    <script src="/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
-    <script>
-      tinymce.init({
-        selector: "#mytextarea",
-      });
-    </script>
-    <form action="/document" method="post">
-      <% if (locals.doc) { %>
-        <input type="hidden" name="id" value="<%= doc.id %>">
-      <% } %>
-      <input type="text" name="Title" id="Title" placeholder="Title" value="<%= locals.doc ? doc.title : '' %>" /> <br />
-      <textarea name="editor" id="mytextarea"><%= locals.doc ? doc.body : '' %></textarea>
-      <button type="submit">Submit</button>
-    </form>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+</head>
+
+<body>
+  <script src="/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+  <script>
+    tinymce.init({
+      selector: "#mytextarea",
+    });
+  </script>
+  <form action="/document" method="post">
+    <% if (locals.doc) { %>
+    <input type="hidden" name="id" value="<%= doc.id %>">
+    <% } %>
+    <input type="text" name="Title" id="Title" placeholder="Title" value="<%= locals.doc ? doc.title : '' %>" /> <br />
+    <textarea name="editor" id="mytextarea"><%= locals.doc ? doc.body : '' %></textarea>
+    <button type="submit">Submit</button>
+  </form>
+  <br>
+  <div id="currentCollection">
+    <button id="prevCollection">&lt;</button>
+    <button id="nextCollection">&gt;</button>
+    <h1 id="collectionTitle"></h1>
+    <div id="entries"></div>
+  </div>
+</body>
+<script src="/public/javascript/document.js"></script>
+
 </html>

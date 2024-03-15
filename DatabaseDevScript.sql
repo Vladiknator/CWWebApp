@@ -107,7 +107,7 @@ ALTER SEQUENCE public.docs_id_seq OWNED BY public.docs.id;
 --
 
 CREATE TABLE public.notes (
-    id integer NOT NULL,
+    id bigint NOT NULL,
     title text NOT NULL,
     alias text,
     note text,
@@ -123,7 +123,7 @@ ALTER TABLE public.notes OWNER TO postgres;
 --
 
 CREATE SEQUENCE public.notes_id_seq
-    AS integer
+    AS bigint
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
