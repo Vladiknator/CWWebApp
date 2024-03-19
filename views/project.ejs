@@ -20,9 +20,20 @@
     <input type="submit" value="Submit">
   </form>
   <form action="/createdocs" method="post">
-    <input type="text" placeholder="Title" name="title">
+    <input type="text" placeholder="Title" name="title" required>
     <input type="submit" value="Create Document">
   </form>
+
+  <form action="/deleteDocument" method="post">
+  <label for="deleteDocument">Delete a document:</label>
+  <select name="documentId" id="deleteDocument">
+    <% docs.forEach(e => { %>  
+      <option value="<%= e.id %>"><%= e.title %></option>
+    <% }); %>
+  </select>
+  <input type="submit" value="Submit">
+  </form>
+
   <br>
   <form action="/selectcollection" method="post">
     <label for="collection">Choose a collection:</label>
@@ -35,12 +46,23 @@
     <input type="submit" value="Submit">
   </form>
   <form action="/createcollection" method="post">
-    <input type="text" placeholder="Title" name="title">
+    <input type="text" placeholder="Title" name="title" required>
     <input type="submit" value="Create Collection">
   </form>
   <form action="/home" method="=post">
     <input type="submit" value="Home">
   </form>
+
+  <form action="/deleteCollection" method="post">
+  <label for="deleteCollection">Delete a collection:</label>
+  <select name="collectionId" id="deleteCollection">
+    <% colls.forEach(e => { %>  
+      <option value="<%= e.id %>"><%= e.title %></option>
+    <% }); %>
+  </select>
+  <input type="submit" value="Submit">
+  </form>
+
 </body>
 
 </html>
