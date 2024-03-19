@@ -36,14 +36,13 @@ async function getNotesData() {
   highlightAliases(noteJSON, editors[0]);
   const aliasButton = document.getElementById('testAlias');
   aliasButton.addEventListener(
-    'type',
+    'click',
     highlightAliases.bind(null, noteJSON, editors[0]),
   );
 }
 
 function loadCollection(i) {
   const coll = noteJSON[i];
-  console.log(i);
   const title = document.getElementById('collectionTitle');
   title.textContent = coll.title;
   const entries = document.getElementById('entries');
@@ -91,6 +90,7 @@ function escapeRegExp(string) {
 }
 
 function highlightAliases(collections, editor) {
+  console.log('Highlighting aliases');
   // Iterate over each object
   collections.forEach((collection) => {
     collection.notes.forEach((note) => {
@@ -108,29 +108,77 @@ function highlightAliases(collections, editor) {
 
         // Create a regular expression to find the alias in the editor content
         const regex = new RegExp(`\\b${escapedAlias}\\b`, 'gi');
+        console.log(regex);
 
         // Use the TinyMCE API to traverse the editor's content
-        editor.getBody().normalize();
+        const body = editor.getBody();
         // Code below does not yet work
         // eslint-disable-next-line no-undef
-        tinymce.activeEditor.dom.walk(
-          editor.getBody(),
-          (node) => {
-            if (node.nodeType === 3) {
-              // Text node
-              const nodeVal = node.nodeValue;
-              const match = nodeVal.match(regex);
-              if (match) {
-                const newNode = editor.getDoc().createElement('span');
-                newNode.style.color = 'blue';
-                // eslint-disable-next-line prefer-destructuring
-                newNode.textContent = match[0];
-                node.parentNode.replaceChild(newNode, node);
+        const walker = new tinymce.dom.TreeWalker(body);
+
+        do {
+          if (walker.current().nodeType === 3) {
+            console.log(walker.current());
+            const { parentNode } = walker.current();
+            const parentInnerHTML = parentNode.innerHTML;
+            const words = parentInnerHTML.split(/\s+/);
+
+            // Initialize the result
+            let result = '';
+
+            // Iterate over each word
+            for (const word of words) {
+              // Check if the word is already wrapped in a span
+              if (!word.startsWith('<span') && !word.endsWith('</span>')) {
+                if (word.match(regex)) {
+                  // Wrap the word in a span
+                  result += `<span>${word}</span> `;
+                } else {
+                  // Keep the original word
+                  result += `${word} `;
+                }
+              } else {
+                // Keep the original word
+                result += `${word} `;
               }
             }
-          },
-          'childNodes',
-        );
+
+            // Remove the trailing space
+            result = result.trim();
+
+            // Update the element's inner HTML
+            parentNode.innerHTML = result;
+          }
+
+          // const nodeVal = walker.current().nodeValue;
+          // const match = nodeVal.match(regex);
+          // if (match) {
+          //   const newNode = editor.getDoc().createElement('span');
+          //   newNode.style.color = 'blue';
+          //   // eslint-disable-next-line prefer-destructuring
+          //   newNode.textContent = match[0];
+          //   // node.parentNode.replaceChild(newNode, node);
+          // }
+        } while (walker.next());
+
+        // tinymce.activeEditor.dom.walk(
+        //   editor.getBody(),
+        //   (node) => {
+        //     if (node.nodeType === 3) {
+        //       // Text node
+        //       const nodeVal = node.nodeValue;
+        //       const match = nodeVal.match(regex);
+        //       if (match) {
+        //         const newNode = editor.getDoc().createElement('span');
+        //         newNode.style.color = 'blue';
+        //         // eslint-disable-next-line prefer-destructuring
+        //         newNode.textContent = match[0];
+        //         node.parentNode.replaceChild(newNode, node);
+        //       }
+        //     }
+        //   },
+        //   'childNodes',
+        // );
       });
     });
   });

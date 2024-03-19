@@ -16,7 +16,7 @@
     <% } %>
     <input type="text" name="Title" id="Title" placeholder="Title" value="<%= locals.doc ? doc.title : '' %>" /> <br />
     <textarea name="editor" id="document"><%= locals.doc ? doc.body : '' %></textarea>
-    <button id="testAlias">Reload Aliases</button>
+    <button id="testAlias" type="button" >Reload Aliases</button>
     <button type="submit">Submit</button>
   </form>
   <br>
