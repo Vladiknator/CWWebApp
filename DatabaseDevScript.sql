@@ -190,7 +190,8 @@ CREATE TABLE public.users (
     id integer NOT NULL,
     username text NOT NULL,
     password text NOT NULL,
-    email text
+    email text,
+    blocked boolean DEFAULT false
 );
 
 
@@ -220,6 +221,20 @@ ALTER SEQUENCE public.users_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
+
+--
+-- TOC entry 226 (class 1259 OID 16640)
+-- Name: session; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.session (
+    sid character varying(36) NOT NULL,
+    sess json NOT NULL,
+    expired TIMESTAMP WITH TIME ZONE NOT NULL
+);
+
+
+ALTER TABLE public.session OWNER TO postgres;
 
 --
 -- TOC entry 4657 (class 2604 OID 16615)
@@ -316,6 +331,15 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- TOC entry 4675 (class 2606 OID 16646)
+-- Name: session session_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.session
+    ADD CONSTRAINT session_pkey PRIMARY KEY (sid);
+
+
+--
 -- TOC entry 4673 (class 2606 OID 16620)
 -- Name: collections collections_proj_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
@@ -356,4 +380,3 @@ ALTER TABLE ONLY public.projects
 --
 -- PostgreSQL database dump complete
 --
-

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>API Documentation</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+      }
+      h1 {
+        text-align: center;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      code {
+        background-color: #f2f2f2;
+        padding: 2px 4px;
+        font-family: monospace;
+      }
+      #response {
+        background-color: #333;
+        color: #fff;
+        font-family: monospace;
+        padding: 10px;
+        border-radius: 5px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>API Documentation</h1>
+    <table>
+      <tr>
+        <th>Endpoint</th>
+        <th>Method</th>
+        <th>Description</th>
+        <th>Parameters</th>
+        <th>Try It</th>
+      </tr>
+      <tr>
+        <td><code>/api/users</code></td>
+        <td>GET</td>
+        <td>Get a list of all users with their projects, documents, and collections.</td>
+        <td>
+          <ul>
+            <li><code>x-api-key</code> (header): Admin API Key</li>
+          </ul>
+        </td>
+        <td>
+          <input type="text" id="apiKey" placeholder="Enter API Key" />
+          <button onclick="fetchData('/api/users', 'GET')">Try It</button>
+        </td>
+      </tr>
+      <tr>
+        <td><code>/api/users/:username</code></td>
+        <td>GET</td>
+        <td>Get a specific user with their projects, documents, and collections.</td>
+        <td>
+          <ul>
+            <li><code>x-api-key</code> (header): Admin API Key</li>
+            <li><code>:username</code> (path parameter): Username of the user</li>
+          </ul>
+        </td>
+        <td>
+          <input type="text" id="username" placeholder="Enter Username" />
+          <button onclick="fetchData('/api/users/' + document.getElementById('username').value, 'GET')">Try It</button>
+        </td>
+      </tr>
+      <tr>
+        <td><code>/api/users/:username/block</code></td>
+        <td>PUT</td>
+        <td>Block a user.</td>
+        <td>
+          <ul>
+            <li><code>x-api-key</code> (header): Admin API Key</li>
+            <li><code>:username</code> (path parameter): Username of the user</li>
+          </ul>
+        </td>
+        <td>
+          <input type="text" id="username" placeholder="Enter Username" />
+          <button onclick="fetchData('/api/users/' + document.getElementById('username').value + '/block', 'PUT')">Try It</button>
+        </td>
+      </tr>
+      <tr>
+        <td><code>/api/users/:username/unblock</code></td>
+        <td>PUT</td>
+        <td>Unblock a user.</td>
+        <td>
+          <ul>
+            <li><code>x-api-key</code> (header): Admin API Key</li>
+            <li><code>:username</code> (path parameter): Username of the user</li>
+          </ul>
+        </td>
+        <td>
+          <input type="text" id="username1" placeholder="Enter Username" />
+          <button onclick="fetchData('/api/users/' + document.getElementById('username1').value + '/unblock', 'PUT')">Try It</button>
+        </td>
+      </tr>
+      <tr>
+        <td><code>/api/users/:username/edit</code></td>
+        <td>PUT</td>
+        <td>Edit a user's username or email.</td>
+        <td>
+          <ul>
+            <li><code>x-api-key</code> (header): Admin API Key</li>
+            <li><code>:username</code> (path parameter): Username of the user</li>
+            <li><code>newUsername</code> (body parameter): New username for the user</li>
+            <li><code>email</code> (body parameter): New email for the user</li>
+          </ul>
+        </td>
+        <td>
+          <input type="text" id="usernamex" placeholder="Enter Username" />
+          <input type="text" id="newUsername" placeholder="Enter New Username" />
+          <input type="text" id="email" placeholder="Enter Email" />
+          <button onclick="fetchData('/api/users/' + document.getElementById('usernamex').value + '/edit', 'PUT', { newUsername: document.getElementById('newUsername').value, email: document.getElementById('email').value })">Try It</button>
+        </td>
+      </tr>
+      <tr>
+        <td><code>/api/users/:username</code></td>
+        <td>DELETE</td>
+        <td>Delete a user.</td>
+        <td>
+          <ul>
+            <li><code>x-api-key</code> (header): Admin API Key</li>
+            <li><code>:username</code> (path parameter): Username of the user</li>
+          </ul>
+        </td>
+        <td>
+          <input type="text" id="usernamey" placeholder="Enter Username" />
+          <button onclick="fetchData('/api/users/' + document.getElementById('usernamey').value, 'DELETE')">Try It</button>
+        </td>
+      </tr>
+    </table>
+    <pre id="response"></pre>
+    <script>
+      async function fetchData(url, method, body) {
+        const apiKey = document.getElementById('apiKey').value;
+        const headers = new Headers();
+        headers.append('x-api-key', apiKey);
+
+        const options = {
+          method,
+          headers,
+        };
+
+        if (body) {
+          options.body = JSON.stringify(body);
+          headers.append('Content-Type', 'application/json');
+        }
+
+        try {
+          const response = await fetch(url, options);
+          const data = await response.json();
+          document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+        } catch (error) {
+          document.getElementById('response').textContent = `Error: ${error}`;
+        }
+      }
+    </script>
+  </body>
+</html>
