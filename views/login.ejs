@@ -11,9 +11,9 @@
   <h1>Login</h1>
   <a href="/signup">Sign Up</a>
   <form action="/login" method="post">
-    <input type="text" name="username" id="username" placeholder="Username" />
+    <input type="text" name="username" required id="username" placeholder="Username" />
     <br />
-    <input type="password" name="password" id="password" placeholder="Password" />
+    <input type="password" name="password" required id="password" placeholder="Password" />
     <br />
     <input type="submit" value="Submit" />
     <p><%= locals.error ? error : '' %></p>
