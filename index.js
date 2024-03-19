@@ -211,18 +211,6 @@ app.post('/createdocs', sessionCheck, async (req, res) => {
   res.redirect(`/project/${req.session.currentProj}`);
 });
 
-// Delete a document
-app.post('/deleteDocument', sessionCheck, async (req, res) => {
-  const { documentId } = req.body;
-  try {
-    await doSQL('DELETE FROM docs WHERE id = $1', [documentId]);
-    res.redirect(`/project/${req.session.currentProj}`);
-  } catch (error) {
-    console.error('Error deleting document:', error);
-    res.status(500).send('Failed to delete document');
-  }
-});
-
 // Create a new collection
 app.post('/createcollection', sessionCheck, async (req, res) => {
   const { title } = req.body;
@@ -231,18 +219,6 @@ app.post('/createcollection', sessionCheck, async (req, res) => {
     req.session.currentProj,
   ]);
   res.redirect(`/project/${req.session.currentProj}`);
-});
-
-// Delete a collection
-app.post('/deleteCollection', sessionCheck, async (req, res) => {
-  const { collectionId } = req.body;
-  try {
-    await doSQL('DELETE FROM collections WHERE id = $1', [collectionId]);
-    res.redirect(`/project/${req.session.currentProj}`);
-  } catch (error) {
-    console.error('Error deleting collection:', error);
-    res.status(500).send('Failed to delete collection');
-  }
 });
 
 // Update the values of a document after editing
