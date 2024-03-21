@@ -171,7 +171,7 @@ app.post('/selectcollection', sessionCheck, async (req, res) => {
   // note on select return
   // format - cid, ctitle, proj_id, nid, ntitle, alias, note
   const coll = await doSQL(
-    `select c.id as cid, c.title as ctitle, c.proj_id, n.id as nid, n.title as ntitle, n.alias, n.note 
+    `select c.id as cid, c.title as ctitle, c.proj_id, n.id as nid, n.title as ntitle, n.alias, n.note, n.color
 	    from collections c left join notes n on c.id = n.coll_id 
 	    where c.id=$1;`,
     [id],
@@ -286,11 +286,12 @@ app.post('/collection', sessionCheck, async (req, res) => {
   const entries = [];
   const bodyValues = Object.entries(req.body);
   bodyValues.splice(0, 2);
-  for (let index = 0; index < bodyValues.length; index += 3) {
+  for (let index = 0; index < bodyValues.length; index += 4) {
     const obj = {
       title: bodyValues[index][1],
       alias: bodyValues[index + 1][1],
       notes: bodyValues[index + 2][1],
+      color: bodyValues[index + 3][1],
     };
     entries.push(obj);
   }
@@ -301,8 +302,8 @@ app.post('/collection', sessionCheck, async (req, res) => {
   await doSQL('delete from notes where coll_id = $1', [id]);
   entries.forEach(async (e) => {
     await doSQL(
-      'insert into notes (title, alias, note, coll_id) Values ($1, $2, $3, $4)',
-      [e.title, e.alias, e.notes, id],
+      'insert into notes (title, alias, note, color, coll_id) Values ($1, $2, $3, $4, $5)',
+      [e.title, e.alias, e.notes, e.color, id],
     );
   });
 
