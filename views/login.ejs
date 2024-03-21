@@ -5,19 +5,69 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login</title>
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .content-box {
+      width: 100%;
+      padding: 20px;
+      border: 1px solid #000;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    header {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      text-align: center;
+      background-color: aquamarine;
+      padding: 10px 0;
+    }
+
+    footer {
+      position: fixed; 
+      left: 0;
+      bottom: 0;
+      height: 3%;
+      width: 100%; 
+      text-align: center;
+      background-color: aquamarine;
+      padding: 10px 0;
+    }
+  </style>
 </head>
 
 <body>
-  <h1>Login</h1>
-  <a href="/signup">Sign Up</a>
-  <form action="/login" method="post">
-    <input type="text" name="username" required id="username" placeholder="Username" />
-    <br />
-    <input type="password" name="password" required id="password" placeholder="Password" />
-    <br />
-    <input type="submit" value="Submit" />
-    <p><%= locals.error ? error : '' %></p>
-  </form>
+  <header>
+  </header>
+
+  <div class="content-box" id="defaultContent">
+    <h1>Login</h1>
+      <form action="/login" method="post">
+      <input type="text" name="username" required id="username" placeholder="Username" />
+      <br />
+      <input type="password" name="password" required id="password" placeholder="Password" />
+      <br />
+      <input type="submit" value="Login" />
+      <p><%= locals.error ? error : '' %></p>
+      <a href="/signup">Sign Up</a>
+      <form action="/login" method="post">
+      </form>
+  </div>
+
+  <footer>
+    Copyright © 2024, Writle. All rights reserved
+  </footer>  
 </body>
 
 </html>
