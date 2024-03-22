@@ -9,14 +9,15 @@
 
 <body>
   <script src="/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
-  <form action="/document" method="post">
+  <form action="/document" method="post" onsubmit="removeHighlights()">
     <% if (locals.doc) { %>
     <input type="hidden" id="proj_id" value="<%= doc.proj_id %>">
     <input type="hidden" name="id" value="<%= doc.id %>">
     <% } %>
     <input type="text" name="Title" id="Title" placeholder="Title" value="<%= locals.doc ? doc.title : '' %>" /> <br />
     <textarea name="editor" id="document"><%= locals.doc ? doc.body : '' %></textarea>
-    <button id="testAlias" type="button" >Reload Aliases</button>
+    <button id="testAlias" type="button">Reload Aliases</button>
+    <button id="removeAlias" type="button" onclick="removeHighlights()">Remove Aliases</button>
     <button type="submit">Submit</button>
   </form>
   <br>

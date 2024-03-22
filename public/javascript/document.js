@@ -1,6 +1,7 @@
 let noteJSON;
 let collIndex = 0;
 let editors;
+let matchingArray;
 const projId = document.getElementById('proj_id').value;
 
 const tinyMCEConfig = {
@@ -23,22 +24,12 @@ const tinyMCEConfig = {
     'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }',
 };
 
-// eslint-disable-next-line no-undef
-// tinymce.init(tinyMCEConfig);
-
 async function getNotesData() {
   const noteRawData = await fetch(`notes/${projId}`);
   noteJSON = await noteRawData.json();
-  console.log(noteJSON);
-  // eslint-disable-next-line no-undef
-  editors = await tinymce.init(tinyMCEConfig);
   loadCollection(0);
-  highlightAliases(noteJSON, editors[0]);
-  const aliasButton = document.getElementById('testAlias');
-  aliasButton.addEventListener(
-    'click',
-    highlightAliases.bind(null, noteJSON, editors[0]),
-  );
+  matchingArray = createMatchingArray(noteJSON);
+  highlightAliases(editors[0]);
 }
 
 function loadCollection(i) {
@@ -56,7 +47,10 @@ function loadCollection(i) {
     entryDiv.appendChild(entryTitle);
 
     const alias = document.createElement('p');
-    alias.textContent = `Aliases: ${e.alias}`;
+    const aliasSpan = document.createElement('span');
+    aliasSpan.textContent = `Aliases: ${e.alias}`;
+    aliasSpan.style = `background-color: ${e.color}80; color: ${getContrastColor(e.color)};`;
+    alias.appendChild(aliasSpan);
     entryDiv.appendChild(alias);
 
     const note = document.createElement('div');
@@ -89,102 +83,158 @@ function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
 
-function highlightAliases(collections, editor) {
-  console.log('Highlighting aliases');
-  // Iterate over each object
+// Create an array of objects that have a color, a note id and a array of regexs that match to aliases for each note that has an alias
+function createMatchingArray(collections) {
+  const matchingArrayLocal = [];
   collections.forEach((collection) => {
     collection.notes.forEach((note) => {
-      // Split the aliases string into an array
+      // Clean and split aliases into array
       const aliases = note.alias.split(',');
+      const cleanedAliases = aliases
+        .map((e) => e.trim())
+        .filter((e) => /[a-z]/i.test(e));
 
-      // Iterate over each alias in the current object
-      aliases.forEach((alias) => {
-        // Trim whitespace from the alias
-        // eslint-disable-next-line no-param-reassign
-        alias = alias.trim();
+      if (cleanedAliases.length === 0) return;
 
-        // Escape special characters in the alias
-        const escapedAlias = escapeRegExp(alias);
-
-        // Create a regular expression to find the alias in the editor content
-        const regex = new RegExp(`\\b${escapedAlias}\\b`, 'gi');
-        console.log(regex);
-
-        // Use the TinyMCE API to traverse the editor's content
-        const body = editor.getBody();
-        // Code below does not yet work
-        // eslint-disable-next-line no-undef
-        const walker = new tinymce.dom.TreeWalker(body);
-
-        do {
-          if (walker.current().nodeType === 3) {
-            console.log(walker.current());
-            const { parentNode } = walker.current();
-            const parentInnerHTML = parentNode.innerHTML;
-            const words = parentInnerHTML.split(/\s+/);
-
-            // Initialize the result
-            let result = '';
-
-            // Iterate over each word
-            for (const word of words) {
-              // Check if the word is already wrapped in a span
-              if (!word.startsWith('<span') && !word.endsWith('</span>')) {
-                if (word.match(regex)) {
-                  // Wrap the word in a span
-                  result += `<span>${word}</span> `;
-                } else {
-                  // Keep the original word
-                  result += `${word} `;
-                }
-              } else {
-                // Keep the original word
-                result += `${word} `;
-              }
-            }
-
-            // Remove the trailing space
-            result = result.trim();
-
-            // Update the element's inner HTML
-            parentNode.innerHTML = result;
-          }
-
-          // const nodeVal = walker.current().nodeValue;
-          // const match = nodeVal.match(regex);
-          // if (match) {
-          //   const newNode = editor.getDoc().createElement('span');
-          //   newNode.style.color = 'blue';
-          //   // eslint-disable-next-line prefer-destructuring
-          //   newNode.textContent = match[0];
-          //   // node.parentNode.replaceChild(newNode, node);
-          // }
-        } while (walker.next());
-
-        // tinymce.activeEditor.dom.walk(
-        //   editor.getBody(),
-        //   (node) => {
-        //     if (node.nodeType === 3) {
-        //       // Text node
-        //       const nodeVal = node.nodeValue;
-        //       const match = nodeVal.match(regex);
-        //       if (match) {
-        //         const newNode = editor.getDoc().createElement('span');
-        //         newNode.style.color = 'blue';
-        //         // eslint-disable-next-line prefer-destructuring
-        //         newNode.textContent = match[0];
-        //         node.parentNode.replaceChild(newNode, node);
-        //       }
-        //     }
-        //   },
-        //   'childNodes',
-        // );
-      });
+      // Escape regex and transform each alias into regular expression
+      const regexAliases = cleanedAliases.map(
+        (e) => new RegExp(`\\b${escapeRegExp(e)}\\b`, 'gi'),
+      );
+      const matchObj = {
+        color: note.color,
+        regex: regexAliases,
+        id: note.id,
+      };
+      matchingArrayLocal.push(matchObj);
+      // eslint-disable-next-line no-undef
+      tinymce.activeEditor.dom.addStyle(
+        `.note${note.id} {background-color: ${note.color}80;  color: ${getContrastColor(note.color)}; transition: 0.3s; cursor:pointer;} 
+        .note${note.id}:hover {background-color: ${note.color}FF;}`,
+      );
     });
   });
+  return matchingArrayLocal;
 }
 
-getNotesData();
+function highlightAliases(editor) {
+  removeHighlights();
+  // Use the TinyMCE API to traverse the editor's content
+  const body = editor.getBody();
+
+  // eslint-disable-next-line no-undef
+  const walker = new tinymce.dom.TreeWalker(body);
+
+  do {
+    if (walker.current().nodeType === 3) {
+      const currentNode = walker.current();
+      const { parentNode } = currentNode;
+      const currentText = currentNode.textContent;
+      const replacements = [];
+
+      matchingArray.forEach((entry) => {
+        entry.regex.forEach((regex) => {
+          const matches = [...currentText.matchAll(regex)];
+          if (matches.length > 0) {
+            matches.forEach((match) => {
+              const found = {
+                indexStart: match.index,
+                indexEnd: match.index + match[0].length,
+                match: match[0],
+                noteId: entry.id,
+              };
+              replacements.push(found);
+            });
+          }
+        });
+      });
+
+      replacements.sort((a, b) => {
+        if (a.indexStart === b.indexStart) {
+          return a.indexEnd - b.indexEnd;
+        }
+        return a.indexStart - b.indexStart;
+      });
+
+      let overallIndex = 0;
+      replacements.forEach((rep) => {
+        const beforeMatch = currentText.slice(overallIndex, rep.indexStart);
+        if (beforeMatch.length > 0) {
+          const beforeMatchNode = document.createTextNode(beforeMatch);
+          parentNode.insertBefore(beforeMatchNode, currentNode);
+        }
+        const matchNode = document.createElement('span');
+        matchNode.dataset.noteId = rep.noteId;
+        matchNode.textContent = rep.match;
+        matchNode.className = 'alias';
+        matchNode.classList.add(`note${rep.noteId}`);
+        parentNode.insertBefore(matchNode, currentNode);
+        overallIndex = rep.indexEnd;
+        const finalNode = document.createTextNode('\u200b');
+        parentNode.insertBefore(finalNode, currentNode);
+      });
+
+      if (overallIndex < currentText.length - 1) {
+        const trailing = currentText.slice(overallIndex, currentText.length);
+        const trailingNode = document.createTextNode(trailing);
+        parentNode.insertBefore(trailingNode, currentNode);
+      }
+
+      currentNode.remove();
+    }
+  } while (walker.next());
+}
+
+function removeHighlights() {
+  const spans = document
+    .getElementById('document_ifr')
+    .contentWindow.document.querySelectorAll('span.alias');
+  spans.forEach((span) => {
+    const parent = span.parentNode;
+    while (span.firstChild) {
+      parent.insertBefore(span.firstChild, span);
+    }
+    parent.removeChild(span);
+    parent.normalize();
+  });
+  const body = editors[0].getBody();
+
+  // eslint-disable-next-line no-undef
+  const walker = new tinymce.dom.TreeWalker(body);
+
+  do {
+    if (walker.current().nodeType === 3) {
+      walker.current().textContent = walker
+        .current()
+        .textContent.replace(/\u200B/g, '');
+    }
+  } while (walker.next());
+}
+
+function getContrastColor(hexColor) {
+  // Convert the hex color to RGB
+  const r = parseInt(hexColor.substr(1, 2), 16);
+  const g = parseInt(hexColor.substr(3, 2), 16);
+  const b = parseInt(hexColor.substr(5, 2), 16);
+
+  // Calculate the brightness of the color
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+
+  // Return black for bright colors, white for dark colors
+  return brightness > 128 ? 'black' : 'white';
+}
+
+async function loadApp() {
+  // eslint-disable-next-line no-undef
+  editors = await tinymce.init(tinyMCEConfig);
+  const aliasButton = document.getElementById('testAlias');
+  aliasButton.addEventListener(
+    'click',
+    highlightAliases.bind(null, editors[0]),
+  );
+  getNotesData();
+}
+
+loadApp();
 
 const nextButton = document.getElementById('nextCollection');
 nextButton.addEventListener('click', nextCollection);

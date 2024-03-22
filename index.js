@@ -265,7 +265,7 @@ app.get('/notes/:projId', async (req, res) => {
     projId,
   ]);
   const notes = await doSQL(
-    'select n.id, n.title, alias, note, coll_id, proj_id  from notes n join collections c on n.coll_id = c.id where proj_id = $1',
+    'select n.id, n.title, n.color, alias, note, coll_id, proj_id  from notes n join collections c on n.coll_id = c.id where proj_id = $1',
     [projId],
   );
   // map notes to correct collection and return a JSON object
