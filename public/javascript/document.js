@@ -80,7 +80,7 @@ function prevCollection() {
   loadCollection(collIndex);
 }
 
-function selectNote(targetId) {
+function selectNote(targetId, color) {
   const foundIndex = noteJSON.findIndex((c) =>
     c.notes.some((note) => note.id === targetId),
   );
@@ -90,11 +90,21 @@ function selectNote(targetId) {
   }
   const entries = document.getElementById('entries');
   const target = document.getElementById(targetId);
+  target.style.setProperty('--highlight-color', `${color}80`);
 
   const sectionPosition = target.offsetTop;
 
   // Scroll the div to the section
   entries.scrollTop = sectionPosition - 180;
+
+  document.getElementById('highlight-style');
+
+  target.classList.add('highlight');
+
+  // Remove the highlight after a delay
+  setTimeout(() => {
+    target.classList.remove('highlight');
+  }, 1300); // 2000ms = 2 seconds
 }
 
 function escapeRegExp(string) {
@@ -159,6 +169,7 @@ function highlightAliases(editor) {
                 indexEnd: match.index + match[0].length,
                 match: match[0],
                 noteId: entry.id,
+                color: entry.color,
               };
               replacements.push(found);
             });
@@ -191,7 +202,11 @@ function highlightAliases(editor) {
         parentNode.insertBefore(finalNode, currentNode);
         matchNode.addEventListener(
           'click',
-          selectNote.bind('null', parseInt(matchNode.dataset.noteId)),
+          selectNote.bind(
+            'null',
+            parseInt(matchNode.dataset.noteId),
+            rep.color,
+          ),
         );
       });
 

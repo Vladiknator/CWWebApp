@@ -65,6 +65,23 @@ body {
   overflow-y: auto;
 }
 
+.entry {
+  background-color: white;
+}
+
+.entry.highlight {
+  animation: fadeout 1s forwards;
+}
+
+@keyframes fadeout {
+  from {
+    background-color: var(--highlight-color);
+  }
+  to {
+    background-color: white;
+  }
+}
+
 #editor-form {
   display: flex;
   flex-direction: column;
