@@ -7,12 +7,12 @@ const projId = document.getElementById('proj_id').value;
 const tinyMCEConfig = {
   selector: 'textarea#document',
   plugins:
-    'preview importcss searchreplace autolink save directionality code visualblocks visualchars fullscreen link codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons accordion',
+    'preview autoresize importcss searchreplace autolink save directionality code visualblocks visualchars fullscreen link codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons accordion',
   menubar: 'file edit view insert format tools table help',
   toolbar:
     'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | table | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | save print | pagebreak anchor codesample | ltr rtl',
   importcss_append: true,
-  height: 600,
+  height: '80vh',
   quickbars_selection_toolbar:
     'bold italic | quicklink h2 h3 blockquote quicktable',
   noneditable_class: 'mceNonEditable',
@@ -34,6 +34,7 @@ async function getNotesData() {
 
 function loadCollection(i) {
   const coll = noteJSON[i];
+  collIndex = i;
   const title = document.getElementById('collectionTitle');
   title.textContent = coll.title;
   const entries = document.getElementById('entries');
@@ -41,6 +42,7 @@ function loadCollection(i) {
   coll.notes.forEach((e) => {
     const entryDiv = document.createElement('div');
     entryDiv.className = 'entry';
+    entryDiv.id = e.id;
 
     const entryTitle = document.createElement('h3');
     entryTitle.textContent = `Title: ${e.title}`;
@@ -63,11 +65,10 @@ function loadCollection(i) {
 
 function nextCollection() {
   if (collIndex + 1 < noteJSON.length) {
-    collIndex += 1;
+    loadCollection(collIndex + 1);
   } else {
-    collIndex = 0;
+    loadCollection(0);
   }
-  loadCollection(collIndex);
 }
 
 function prevCollection() {
@@ -77,6 +78,23 @@ function prevCollection() {
     collIndex = noteJSON.length - 1;
   }
   loadCollection(collIndex);
+}
+
+function selectNote(targetId) {
+  const foundIndex = noteJSON.findIndex((c) =>
+    c.notes.some((note) => note.id === targetId),
+  );
+  console.log(foundIndex);
+  if (collIndex !== foundIndex) {
+    loadCollection(foundIndex);
+  }
+  const entries = document.getElementById('entries');
+  const target = document.getElementById(targetId);
+
+  const sectionPosition = target.offsetTop;
+
+  // Scroll the div to the section
+  entries.scrollTop = sectionPosition - 180;
 }
 
 function escapeRegExp(string) {
@@ -171,6 +189,10 @@ function highlightAliases(editor) {
         overallIndex = rep.indexEnd;
         const finalNode = document.createTextNode('\u200b');
         parentNode.insertBefore(finalNode, currentNode);
+        matchNode.addEventListener(
+          'click',
+          selectNote.bind('null', parseInt(matchNode.dataset.noteId)),
+        );
       });
 
       if (overallIndex < currentText.length - 1) {

@@ -5,27 +5,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Document</title>
+  <link rel="stylesheet" href="/public/css/document.css">
 </head>
 
 <body>
   <script src="/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
-  <form action="/document" method="post" onsubmit="removeHighlights()">
-    <% if (locals.doc) { %>
-    <input type="hidden" id="proj_id" value="<%= doc.proj_id %>">
-    <input type="hidden" name="id" value="<%= doc.id %>">
-    <% } %>
-    <input type="text" name="Title" id="Title" placeholder="Title" value="<%= locals.doc ? doc.title : '' %>" /> <br />
-    <textarea name="editor" id="document"><%= locals.doc ? doc.body : '' %></textarea>
-    <button id="testAlias" type="button">Reload Aliases</button>
-    <button id="removeAlias" type="button" onclick="removeHighlights()">Remove Aliases</button>
-    <button type="submit">Submit</button>
-  </form>
-  <br>
-  <div id="currentCollection">
-    <button id="prevCollection">&lt;</button>
-    <button id="nextCollection">&gt;</button>
-    <h1 id="collectionTitle"></h1>
-    <div id="entries"></div>
+  <div class="grid-container">
+    <div class="grid-item" id="grid-editor">
+      <form id="editor-form" action="/document" method="post" onsubmit="removeHighlights()">
+        <% if (locals.doc) { %>
+        <input type="hidden" id="proj_id" value="<%= doc.proj_id %>">
+        <input type="hidden" name="id" value="<%= doc.id %>">
+        <% } %>
+        <input type="text" name="Title" id="Title" placeholder="Title" value="<%= locals.doc ? doc.title : '' %>" /> <br />
+        <textarea name="editor" id="document"><%= locals.doc ? doc.body : '' %></textarea>
+        <div class="form-buttons">
+          <button id="testAlias" type="button">Reload Aliases</button>
+          <button id="removeAlias" type="button" onclick="removeHighlights()">Remove Aliases</button>
+          <button type="submit">Submit</button>
+        </div>
+      </form>
+    </div>
+    <div class="grid-item" id="grid-coll">
+      <div id="currentCollection">
+        <div class="buttons">
+          <button id="prevCollection">&larr;</button> <button id="nextCollection">&rarr;</button>
+        </div>
+        <h1 id="collectionTitle"></h1>
+        <div id="entries"></div>
+      </div>
+    </div>
   </div>
 </body>
 <script src="/public/javascript/document.js"></script>
