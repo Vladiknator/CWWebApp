@@ -1,20 +1,34 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
-  </head>
-  <body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login</title>
+  <link rel="stylesheet" href="/public/css/login.css">
+</head>
+
+<body>
+  <header>
+  </header>
+
+  <div class="content-box" id="defaultContent">
     <h1>Login</h1>
-    <a href="/signup">Sign Up</a>
     <form action="/login" method="post">
-      <input type="text" name="username" id="username" placeholder="Username" />
+      <input type="text" name="username" required id="username" placeholder="Username" />
       <br />
-      <input type="text" name="password" id="password" placeholder="Password" />
+      <input type="password" name="password" required id="password" placeholder="Password" />
       <br />
-      <input type="submit" value="Submit" />
+      <input type="submit" value="Login" />
       <p><%= locals.error ? error : '' %></p>
-    </form>
-  </body>
+      <a href="/signup">Sign Up</a>
+      <form action="/login" method="post">
+      </form>
+  </div>
+
+  <footer>
+    Copyright © 2024, Writle. All rights reserved
+  </footer>
+</body>
+
 </html>

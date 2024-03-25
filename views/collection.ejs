@@ -10,8 +10,8 @@
 
 <body>
 
+  <script type="module" src="https://cdn.skypack.dev/pin/vanilla-colorful@v0.7.2-FPfg6B2z69tPM5kbGyLo/mode=imports,min/optimized/vanilla-colorful.js"></script>
   <script src="/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
-  <script src="/public/javascript/collection.js"></script>
   <h1>Note Collection</h1>
 
   <form action="/collection" method="post">
@@ -48,6 +48,15 @@
               <div class="tinymce-body" id="notes<%= counter %>"><%- e.note %></div>
             </td>
           </tr>
+          <tr>
+            <td>
+              <label for="color<%= counter %>">Color:</label>
+            </td>
+            <td class="absorb">
+              <hex-color-picker color="<%- e.color %>" style="height: 6rem;" id="colorPicker<%= counter %>"></hex-color-picker>
+              <input type="hidden" name="color<%= counter %>" id="color<%= counter %>" value="<%- e.color %>">
+            </td>
+          </tr>
         </table>
         <button type="button" onclick="deleteEntry( <%= counter %> )">Delete Entry</button>
       </div>
@@ -59,5 +68,7 @@
   </form>
 
 </body>
+
+<script src="/public/javascript/collection.js"></script>
 
 </html>

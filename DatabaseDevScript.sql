@@ -5,7 +5,7 @@
 -- Dumped from database version 16.1
 -- Dumped by pg_dump version 16.1
 
--- Started on 2024-03-11 20:40:14
+-- Started on 2024-03-25 10:44:27
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -111,7 +111,8 @@ CREATE TABLE public.notes (
     title text NOT NULL,
     alias text,
     note text,
-    coll_id integer
+    coll_id integer,
+    color character(7)
 );
 
 
@@ -351,7 +352,7 @@ ALTER TABLE ONLY public.projects
     ADD CONSTRAINT projects_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
--- Completed on 2024-03-11 20:40:14
+-- Completed on 2024-03-25 10:44:28
 
 --
 -- PostgreSQL database dump complete

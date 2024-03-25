@@ -1,0 +1,24 @@
+body {
+  margin-top: 100px;
+}
+header {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 3%;
+  width: 100%;
+  text-align: center;
+  background-color: aquamarine;
+  padding: 10px 0;
+}
+
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  height: 3%;
+  width: 100%;
+  text-align: center;
+  background-color: aquamarine;
+  padding: 10px 0;
+}
