@@ -4,13 +4,13 @@ import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import pg from 'pg';
 import cookieSession from 'cookie-session';
-import crypto from 'crypto';
 
 const app = express();
 const port = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const adminApiKey = '46f808fd586c12d1d13e992dd9e6b75a2ebe7f0c447c0d9c5c9a2937324f1cc6';
+const adminApiKey =
+  '46f808fd586c12d1d13e992dd9e6b75a2ebe7f0c447c0d9c5c9a2937324f1cc6';
 
 app.set('view engine', 'ejs');
 
@@ -52,8 +52,8 @@ app.get('/', (req, res) => {
   res.render('index', { date: new Date() });
 });
 
-app.get('/api-docs',(req,res)=>{
-res.render('api-docs')
+app.get('/api-docs', (req, res) => {
+  res.render('api-docs');
 });
 
 app.get('/login', (req, res) => {
@@ -73,17 +73,17 @@ app.post('/login', async (req, res) => {
     'select * from users where username = $1 and password = $2',
     [username, password],
   );
- 
   if (result.rows.length === 1 && !result.rows[0].blocked) {
     req.session.id = result.rows[0].id;
     req.session.username = result.rows[0].username;
     res.redirect('/home');
-  } else if(result.rows[0].blocked == true){
-    res.render('login', { error: 'Your account is blocked. Please contact the administrator!.' });
+  } else if (result.rows[0].blocked === true) {
+    res.render('login', {
+      error: 'Your account is blocked. Please contact the administrator!.',
+    });
   } else {
-	res.render('login',{error: 'Invalid login information.'})
-}
-
+    res.render('login', { error: 'Invalid login information.' });
+  }
 });
 
 app.get('/signup', (req, res) => {
@@ -242,8 +242,6 @@ app.post('/collection', async (req, res) => {
 
 // Admin API routes
 
-
-
 app.get('/api/users', async (req, res) => {
   const apiKey = req.headers['x-api-key'];
   if (apiKey !== adminApiKey) {
@@ -307,12 +305,16 @@ app.put('/api/users/:username/edit', async (req, res) => {
   }
 
   const { username } = req.params;
-  const {newUsername, email }  = req.body; 
+  const { newUsername, email } = req.body;
   if (!newUsername && !email) {
-    return res.status(400).json({ error: 'Either newUsername or email is required' });
+    return res
+      .status(400)
+      .json({ error: 'Either newUsername or email is required' });
   }
 
-  const user = await doSQL('SELECT id FROM users WHERE username = $1', [username]);
+  const user = await doSQL('SELECT id FROM users WHERE username = $1', [
+    username,
+  ]);
   if (user.rows.length === 0) {
     return res.status(404).json({ error: 'User not found' });
   }
@@ -320,7 +322,10 @@ app.put('/api/users/:username/edit', async (req, res) => {
   const userId = user.rows[0].id;
 
   if (newUsername) {
-    await doSQL('UPDATE users SET username = $1 WHERE id = $2', [newUsername, userId]);
+    await doSQL('UPDATE users SET username = $1 WHERE id = $2', [
+      newUsername,
+      userId,
+    ]);
   }
 
   if (email) {
@@ -336,7 +341,8 @@ app.get('/api/users/:username', async (req, res) => {
   }
 
   const { username } = req.params;
-  const user = await doSQL(`
+  const user = await doSQL(
+    `
     SELECT
       u.username,
       u.email,
@@ -382,7 +388,9 @@ app.get('/api/users/:username', async (req, res) => {
     LEFT JOIN projects p ON u.id = p.user_id
     WHERE u.username = $1
     GROUP BY u.id, u.username, u.email
-  `, [username]);
+  `,
+    [username],
+  );
 
   if (user.rows.length === 0) {
     return res.status(404).json({ error: 'User not found' });
@@ -397,7 +405,9 @@ app.put('/api/users/:username/unblock', async (req, res) => {
   }
 
   const { username } = req.params;
-  const user = await doSQL('SELECT id FROM users WHERE username = $1', [username]);
+  const user = await doSQL('SELECT id FROM users WHERE username = $1', [
+    username,
+  ]);
   if (user.rows.length === 0) {
     return res.status(404).json({ error: 'User not found' });
   }
@@ -413,7 +423,9 @@ app.put('/api/users/:username/block', async (req, res) => {
   }
 
   const { username } = req.params;
-  const user = await doSQL('SELECT id FROM users WHERE username = $1', [username]);
+  const user = await doSQL('SELECT id FROM users WHERE username = $1', [
+    username,
+  ]);
   if (user.rows.length === 0) {
     return res.status(404).json({ error: 'User not found' });
   }
@@ -430,7 +442,9 @@ app.delete('/api/users/:username', async (req, res) => {
   }
 
   const { username } = req.params;
-  const user = await doSQL('SELECT id FROM users WHERE username = $1', [username]);
+  const user = await doSQL('SELECT id FROM users WHERE username = $1', [
+    username,
+  ]);
   if (user.rows.length === 0) {
     return res.status(404).json({ error: 'User not found' });
   }
@@ -439,8 +453,14 @@ app.delete('/api/users/:username', async (req, res) => {
 
   try {
     // Delete associated records first
-    await doSQL('DELETE FROM notes WHERE coll_id IN (SELECT id FROM collections WHERE proj_id IN (SELECT id FROM projects WHERE user_id = $1))', [userId]);
-    await doSQL('DELETE FROM collections WHERE proj_id IN (SELECT id FROM projects WHERE user_id = $1)', [userId]);
+    await doSQL(
+      'DELETE FROM notes WHERE coll_id IN (SELECT id FROM collections WHERE proj_id IN (SELECT id FROM projects WHERE user_id = $1))',
+      [userId],
+    );
+    await doSQL(
+      'DELETE FROM collections WHERE proj_id IN (SELECT id FROM projects WHERE user_id = $1)',
+      [userId],
+    );
     await doSQL('DELETE FROM projects WHERE user_id = $1', [userId]);
 
     // Now delete the user
