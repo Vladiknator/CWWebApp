@@ -90,12 +90,14 @@ app.post('/login', async (req, res) => {
     [username, password],
   );
 
+  console.log(result.rows);
+
   // Check if the login information matches with stuff in the database, no = go back to login page, yes = send to home page and set session variables
   if (result.rows.length === 1 && !result.rows[0].blocked) {
     req.session.id = result.rows[0].id;
     req.session.username = result.rows[0].username;
     res.redirect('/home');
-  } else if (result.rows[0].blocked === true) {
+  } else if (result.rows.length === 1 && result.rows[0].blocked === true) {
     res.render('login', {
       error: 'Your account is blocked. Please contact the administrator!.',
     });

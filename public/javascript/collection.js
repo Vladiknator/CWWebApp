@@ -1,6 +1,7 @@
 // TinyMCE config
 const noteConfig = {
   selector: '.tinymce-body',
+  promotion: false,
   menubar: false,
   inline: true,
   plugins: ['link', 'lists', 'autolink'],
