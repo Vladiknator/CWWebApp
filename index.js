@@ -10,6 +10,8 @@ const app = express();
 const port = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const adminApiKey =
+  '46f808fd586c12d1d13e992dd9e6b75a2ebe7f0c447c0d9c5c9a2937324f1cc6';
 
 /* Middleware to check for session ID, any route that should only be accessed by logged in users should 
 include this to check for an existing session. See home route for example of implementation */
@@ -24,6 +26,7 @@ const sessionCheck = (req, res, next) => {
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use('/public', express.static(path.join(process.cwd(), 'public')));
 
@@ -63,6 +66,10 @@ app.get('/', (req, res) => {
   res.render('index', { date: new Date() });
 });
 
+app.get('/api-docs', (req, res) => {
+  res.render('api-docs');
+});
+
 // Show the login page, display a message if one exists, delete after display
 app.get('/login', (req, res) => {
   if (req.session.message) {
@@ -82,13 +89,18 @@ app.post('/login', async (req, res) => {
     'select * from users where username = $1 and password = $2',
     [username, password],
   );
+
   // Check if the login information matches with stuff in the database, no = go back to login page, yes = send to home page and set session variables
-  if (result.rows.length === 1) {
+  if (result.rows.length === 1 && !result.rows[0].blocked) {
     req.session.id = result.rows[0].id;
     req.session.username = result.rows[0].username;
     res.redirect('/home');
+  } else if (result.rows[0].blocked === true) {
+    res.render('login', {
+      error: 'Your account is blocked. Please contact the administrator!.',
+    });
   } else {
-    res.render('login', { error: 'Incorrect login information' });
+    res.render('login', { error: 'Invalid login information.' });
   }
 });
 
@@ -168,8 +180,6 @@ app.post('/selectdocument', sessionCheck, async (req, res) => {
 // Open a selected collection
 app.post('/selectcollection', sessionCheck, async (req, res) => {
   const id = req.body.collection;
-  // note on select return
-  // format - cid, ctitle, proj_id, nid, ntitle, alias, note
   const coll = await doSQL(
     `select c.id as cid, c.title as ctitle, c.proj_id, n.id as nid, n.title as ntitle, n.alias, n.note, n.color
 	    from collections c left join notes n on c.id = n.coll_id 
@@ -282,7 +292,6 @@ app.post('/collection', sessionCheck, async (req, res) => {
   const { title } = req.body;
   const id = req.body.collID;
 
-  // Loop through all entries returned in the body, seperate them into individual objects and put them into the entries array
   const entries = [];
   const bodyValues = Object.entries(req.body);
   bodyValues.splice(0, 2);
@@ -310,6 +319,239 @@ app.post('/collection', sessionCheck, async (req, res) => {
   res.redirect(`/project/${req.session.currentProj}`);
 });
 
+// Admin API routes
+
+app.get('/api/users', async (req, res) => {
+  const apiKey = req.headers['x-api-key'];
+  if (apiKey !== adminApiKey) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const users = await doSQL(`
+    SELECT
+      u.username,
+      u.email,
+      json_agg(
+        json_build_object(
+          'title', p.title,
+          'documents', (
+            SELECT json_agg(
+              json_build_object(
+                'id', d.id,
+                'title', d.title,
+                'body', d.body
+              )
+            )
+            FROM docs d
+            WHERE d.proj_id = p.id
+          ),
+          'collections', (
+            SELECT json_agg(
+              json_build_object(
+                'id', c.id,
+                'title', c.title,
+                'notes', (
+                  SELECT json_agg(
+                    json_build_object(
+                      'id', n.id,
+                      'title', n.title,
+                      'alias', n.alias,
+                      'note', n.note
+                    )
+                  )
+                  FROM notes n
+                  WHERE n.coll_id = c.id
+                )
+              )
+            )
+            FROM collections c
+            WHERE c.proj_id = p.id
+          )
+        )
+      ) AS projects
+    FROM users u
+    LEFT JOIN projects p ON u.id = p.user_id
+    GROUP BY u.id, u.username, u.email
+  `);
+
+  res.json(users.rows);
+});
+
+app.put('/api/users/:username/edit', async (req, res) => {
+  const apiKey = req.headers['x-api-key'];
+  if (apiKey !== adminApiKey) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const { username } = req.params;
+  const { newUsername, email } = req.body;
+  if (!newUsername && !email) {
+    return res
+      .status(400)
+      .json({ error: 'Either newUsername or email is required' });
+  }
+
+  const user = await doSQL('SELECT id FROM users WHERE username = $1', [
+    username,
+  ]);
+  if (user.rows.length === 0) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  const userId = user.rows[0].id;
+
+  if (newUsername) {
+    await doSQL('UPDATE users SET username = $1 WHERE id = $2', [
+      newUsername,
+      userId,
+    ]);
+  }
+
+  if (email) {
+    await doSQL('UPDATE users SET email = $1 WHERE id = $2', [email, userId]);
+  }
+
+  res.json({ message: 'User updated' });
+});
+app.get('/api/users/:username', async (req, res) => {
+  const apiKey = req.headers['x-api-key'];
+  if (apiKey !== adminApiKey) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const { username } = req.params;
+  const user = await doSQL(
+    `
+    SELECT
+      u.username,
+      u.email,
+      json_agg(
+        json_build_object(
+          'title', p.title,
+          'documents', (
+            SELECT json_agg(
+              json_build_object(
+                'id', d.id,
+                'title', d.title,
+                'body', d.body
+              )
+            )
+            FROM docs d
+            WHERE d.proj_id = p.id
+          ),
+          'collections', (
+            SELECT json_agg(
+              json_build_object(
+                'id', c.id,
+                'title', c.title,
+                'notes', (
+                  SELECT json_agg(
+                    json_build_object(
+                      'id', n.id,
+                      'title', n.title,
+                      'alias', n.alias,
+                      'note', n.note
+                    )
+                  )
+                  FROM notes n
+                  WHERE n.coll_id = c.id
+                )
+              )
+            )
+            FROM collections c
+            WHERE c.proj_id = p.id
+          )
+        )
+      ) AS projects
+    FROM users u
+    LEFT JOIN projects p ON u.id = p.user_id
+    WHERE u.username = $1
+    GROUP BY u.id, u.username, u.email
+  `,
+    [username],
+  );
+
+  if (user.rows.length === 0) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+  res.json(user.rows[0]);
+});
+
+app.put('/api/users/:username/unblock', async (req, res) => {
+  const apiKey = req.headers['x-api-key'];
+  if (apiKey !== adminApiKey) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const { username } = req.params;
+  const user = await doSQL('SELECT id FROM users WHERE username = $1', [
+    username,
+  ]);
+  if (user.rows.length === 0) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  const userId = user.rows[0].id;
+  await doSQL('UPDATE users SET blocked = false WHERE id = $1', [userId]);
+  res.json({ message: 'User unblocked' });
+});
+app.put('/api/users/:username/block', async (req, res) => {
+  const apiKey = req.headers['x-api-key'];
+  if (apiKey !== adminApiKey) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const { username } = req.params;
+  const user = await doSQL('SELECT id FROM users WHERE username = $1', [
+    username,
+  ]);
+  if (user.rows.length === 0) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  const userId = user.rows[0].id;
+  await doSQL('UPDATE users SET blocked = true WHERE id = $1', [userId]);
+  res.json({ message: 'User blocked' });
+});
+
+app.delete('/api/users/:username', async (req, res) => {
+  const apiKey = req.headers['x-api-key'];
+  if (apiKey !== adminApiKey) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const { username } = req.params;
+  const user = await doSQL('SELECT id FROM users WHERE username = $1', [
+    username,
+  ]);
+  if (user.rows.length === 0) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  const userId = user.rows[0].id;
+
+  try {
+    // Delete associated records first
+    await doSQL(
+      'DELETE FROM notes WHERE coll_id IN (SELECT id FROM collections WHERE proj_id IN (SELECT id FROM projects WHERE user_id = $1))',
+      [userId],
+    );
+    await doSQL(
+      'DELETE FROM collections WHERE proj_id IN (SELECT id FROM projects WHERE user_id = $1)',
+      [userId],
+    );
+    await doSQL('DELETE FROM projects WHERE user_id = $1', [userId]);
+
+    // Now delete the user
+    await doSQL('DELETE FROM users WHERE id = $1', [userId]);
+    res.json({ message: 'User deleted' });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
+  console.log(`Admin API Key: ${adminApiKey}`);
 });
