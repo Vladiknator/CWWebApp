@@ -1,68 +1,49 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Writle</title>
     <style>
         body {
-            text-align: center; /* Center aligns everything in the body */
-            background-color: rgb(42, 42, 42); /* Light blue background */
-            background-image: url('background-image-url.jpg'); /* Add your background image URL here */
-            background-size: cover; /* Ensure the image covers the whole page */
-            background-position: center; /* Center the background image */
-            padding-top: 100px; /* Add some padding to move content down */
-            color: #ffffff; /* White text color */
-            font-family: Arial, sans-serif; /* Set a nice, readable font */
+            margin-top: 100px;
         }
-        h1 {
-            font-size: 2.5em; /* Makes the Login text bigger */
-            margin-bottom: 0.5em; /* Reduce space below the title */
+        header {
+            position: fixed; 
+            left: 0;
+            top: 0;
+            height: 3%;
+            width: 100%; 
+            text-align: center;
+            background-color: aquamarine;
+            padding: 10px 0;
         }
-        form {
-            display: inline-block; /* Centers the form in the page */
-            text-align: left; /* Aligns form elements to the left */
-            margin-top: 20px; /* Adds some space above the form */
-            background: rgba(32, 195, 232, 0.5); /* Semi-transparent background */
-            padding: 70px; /* Add padding around the form */
-            border-radius: 75px; /* Rounded corners */
-        }
-        input[type="text"], input[type="password"] {
-            width: 100%; /* Make inputs fill the form */
-            margin: 10px 0; /* Add some vertical spacing */
-            padding: 10px; /* Increase input field padding */
-            border-radius: 5px; /* Rounded corners for input fields */
-            border: 1px solid #ddd; /* Light gray border */
-        }
-        input[type="submit"] {
-            width: 100%; /* Make the submit button fill the form */
-            padding: 10px; /* Padding for the button */
-            background-color: #5C6BC0; /* Blue background color */
-            color: #ffffff; /* White text color */
-            border: none; /* No border */
-            border-radius: 5px; /* Rounded corners */
-            cursor: pointer; /* Change cursor on hover */
-        }
-        input[type="submit"]:hover {
-            background-color: #3F51B5; /* Slightly darker blue on hover */
-        }
-        a {
-            color: #ffffff; /* Ensure links are visible */
-            text-decoration: underline; /* Underline links */
+
+        footer {
+            position: fixed; 
+            left: 0;
+            bottom: 0;
+            height: 3%;
+            width: 100%; 
+            text-align: center;
+            background-color: aquamarine;
+            padding: 10px 0;
         }
     </style>
 </head>
 <body>
-    <h1>LOGIN</h1>
- 
-    <form action="/login" method="post">
-        <input type="text" name="username" id="username" placeholder="Username" required />
-        <br />
-        <input type="password" name="password" id="password" placeholder="Password" required />
-        <br />
-        <input type="submit" value="Submit" /><br>
-        <a href="/signup">Sign Up</a>
-        <p><%= locals.error ? error : '' %></p>
-    </form>
+    <header>
+        <div style="float: right;">
+            <a href="/signup">Sign up</a>
+            <a href="/login">Login</a>
+        </div>
+    </header>
+    <h1 style="text-align: center;font-size: 300%;">Writle</h1>
+    <div style="text-align: center;">
+        <h1 style="display: inline-block; border: 2px solid black; padding: 10px;">Welcome to Writle, the nexus of creativity and organization for writers and visionaries. Here, we transform the chaos of creative thoughts into a coherent tapestry of ideas. Writle is more than just a writing app; it's a digital sanctuary for your narratives, notes, and notions. Our platform addresses the quintessential challenge of managing scattered notes by seamlessly integrating them into your writing process. Imagine an environment where characters, locations, and plot elements are effortlessly woven into your stories through intuitive cross-referencing. With Writle, your workspace is customizable, ensuring a uniquely tailored experience that caters to your creative workflow. Whether you're a novelist, a student, or a content creator, Writle is designed to streamline your writing journey, making it as boundless as your imagination.</h1>
+    </div>
+    <footer>
+        Copyright © 2024, Writle. All rights reserved
+    </footer>
 </body>
 </html>
