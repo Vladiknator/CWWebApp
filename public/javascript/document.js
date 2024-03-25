@@ -85,7 +85,6 @@ function selectNote(targetId, color) {
   const foundIndex = noteJSON.findIndex((c) =>
     c.notes.some((note) => note.id === targetId),
   );
-  console.log(foundIndex);
   if (collIndex !== foundIndex) {
     loadCollection(foundIndex);
   }
@@ -149,77 +148,90 @@ function highlightAliases(editor) {
   removeHighlights();
   // Use the TinyMCE API to traverse the editor's content
   const body = editor.getBody();
+  const { children } = body;
 
   // eslint-disable-next-line no-undef
-  const walker = new tinymce.dom.TreeWalker(body);
 
-  do {
-    if (walker.current().nodeType === 3) {
-      const currentNode = walker.current();
-      const { parentNode } = currentNode;
-      const currentText = currentNode.textContent;
-      const replacements = [];
+  Array.from(children).forEach((child) => {
+    // Access each child element here
+    // eslint-disable-next-line no-undef
+    const walker = new tinymce.dom.TreeWalker(child);
 
-      matchingArray.forEach((entry) => {
-        entry.regex.forEach((regex) => {
-          const matches = [...currentText.matchAll(regex)];
-          if (matches.length > 0) {
-            matches.forEach((match) => {
-              const found = {
-                indexStart: match.index,
-                indexEnd: match.index + match[0].length,
-                match: match[0],
-                noteId: entry.id,
-                color: entry.color,
-              };
-              replacements.push(found);
-            });
-          }
+    do {
+      console.log(walker.current());
+      if (walker.current().nodeType === 3) {
+        const currentNode = walker.current();
+        const { parentNode } = currentNode;
+        const currentText = currentNode.textContent;
+        const replacements = [];
+
+        matchingArray.forEach((entry) => {
+          entry.regex.forEach((regex) => {
+            const matches = [...currentText.matchAll(regex)];
+            // console.log(currentText);
+            // console.log(regex);
+            // console.log(matches);
+            if (matches.length > 0) {
+              matches.forEach((match) => {
+                const found = {
+                  indexStart: match.index,
+                  indexEnd: match.index + match[0].length,
+                  match: match[0],
+                  noteId: entry.id,
+                  color: entry.color,
+                };
+                replacements.push(found);
+              });
+            }
+          });
         });
-      });
 
-      replacements.sort((a, b) => {
-        if (a.indexStart === b.indexStart) {
-          return a.indexEnd - b.indexEnd;
+        replacements.sort((a, b) => {
+          if (a.indexStart === b.indexStart) {
+            return a.indexEnd - b.indexEnd;
+          }
+          return a.indexStart - b.indexStart;
+        });
+
+        let overallIndex = 0;
+        replacements.forEach((rep) => {
+          if (rep.indexStart < overallIndex) {
+            return;
+          }
+          const beforeMatch = currentText.slice(overallIndex, rep.indexStart);
+          if (beforeMatch.length > 0) {
+            const beforeMatchNode = document.createTextNode(beforeMatch);
+            parentNode.insertBefore(beforeMatchNode, currentNode);
+          }
+          const matchNode = document.createElement('span');
+          matchNode.dataset.noteId = rep.noteId;
+          matchNode.textContent = rep.match;
+          matchNode.className = 'alias';
+          matchNode.classList.add(`note${rep.noteId}`);
+          parentNode.insertBefore(matchNode, currentNode);
+          overallIndex = rep.indexEnd;
+          const finalNode = document.createTextNode('\u200b');
+          parentNode.insertBefore(finalNode, currentNode);
+          matchNode.addEventListener(
+            'click',
+            selectNote.bind(
+              'null',
+              parseInt(matchNode.dataset.noteId),
+              rep.color,
+            ),
+          );
+        });
+
+        if (overallIndex < currentText.length - 1) {
+          const trailing = currentText.slice(overallIndex, currentText.length);
+          const trailingNode = document.createTextNode(trailing);
+          parentNode.insertBefore(trailingNode, currentNode);
         }
-        return a.indexStart - b.indexStart;
-      });
 
-      let overallIndex = 0;
-      replacements.forEach((rep) => {
-        const beforeMatch = currentText.slice(overallIndex, rep.indexStart);
-        if (beforeMatch.length > 0) {
-          const beforeMatchNode = document.createTextNode(beforeMatch);
-          parentNode.insertBefore(beforeMatchNode, currentNode);
-        }
-        const matchNode = document.createElement('span');
-        matchNode.dataset.noteId = rep.noteId;
-        matchNode.textContent = rep.match;
-        matchNode.className = 'alias';
-        matchNode.classList.add(`note${rep.noteId}`);
-        parentNode.insertBefore(matchNode, currentNode);
-        overallIndex = rep.indexEnd;
-        const finalNode = document.createTextNode('\u200b');
-        parentNode.insertBefore(finalNode, currentNode);
-        matchNode.addEventListener(
-          'click',
-          selectNote.bind(
-            'null',
-            parseInt(matchNode.dataset.noteId),
-            rep.color,
-          ),
-        );
-      });
-
-      if (overallIndex < currentText.length - 1) {
-        const trailing = currentText.slice(overallIndex, currentText.length);
-        const trailingNode = document.createTextNode(trailing);
-        parentNode.insertBefore(trailingNode, currentNode);
+        currentNode.remove();
       }
-
-      currentNode.remove();
-    }
-  } while (walker.next());
+    } while (walker.next());
+  });
 }
 
 function removeHighlights() {
