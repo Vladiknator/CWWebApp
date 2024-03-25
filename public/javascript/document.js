@@ -8,7 +8,7 @@ const tinyMCEConfig = {
   selector: 'textarea#document',
   promotion: false,
   plugins:
-    'preview autoresize importcss searchreplace autolink save directionality code visualblocks visualchars fullscreen link codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons accordion',
+    'preview importcss searchreplace autolink save directionality code visualblocks visualchars fullscreen link codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons accordion',
   menubar: 'file edit view insert format tools table help',
   toolbar:
     'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | table | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | save print | pagebreak anchor codesample | ltr rtl',
@@ -22,7 +22,7 @@ const tinyMCEConfig = {
   skin: 'oxide',
   content_css: 'default',
   content_style:
-    'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }',
+    'body { font-family:Helvetica,Arial,sans-serif; font-size:16px; overflow-y: scroll}',
 };
 
 async function getNotesData() {
