@@ -4,7 +4,6 @@ import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import pg from 'pg';
 import cookieSession from 'cookie-session';
-import crypto from 'crypto';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -74,7 +73,6 @@ app.post('/login', async (req, res) => {
     'select * from users where username = $1 and password = $2',
     [username, password],
   );
-
   if (result.rows.length === 1 && !result.rows[0].blocked) {
     req.session.id = result.rows[0].id;
     req.session.username = result.rows[0].username;
