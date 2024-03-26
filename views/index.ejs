@@ -4,43 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Writle</title>
+    <link rel="stylesheet" href="mrowww.css">
+    <script src="script. js"></script>
     <style>
-        body {
-            margin-top: 100px;
-        }
-        header {
-            position: fixed; 
-            left: 0;
-            top: 0;
-            height: 3%;
-            width: 100%; 
-            text-align: center;
-            background-color: aquamarine;
-            padding: 10px 0;
-        }
-
-        footer {
-            position: fixed; 
-            left: 0;
-            bottom: 0;
-            height: 3%;
-            width: 100%; 
-            text-align: center;
-            background-color: aquamarine;
-            padding: 10px 0;
-        }
     </style>
 </head>
 <body>
     <header>
-        <div style="float: right;">
-            <a href="/signup">Sign up</a>
-            <a href="/login">Login</a>
-        </div>
+      <ul class="nav">  
+        <a href="/signup" target="blank"> 
+            <button class="button-3" role="button">Sign up!</button></a>
+            <a href="/login" target="blank"> 
+            <button class="button-3" role="button">Login</button></a>
+        </ul>
     </header>
-    <h1 style="text-align: center;font-size: 300%;">Writle</h1>
+    <div class="wrapper">
+      <div class="typing-demo">
+        Writle
+      </div>
+  </div>
+  <div class="parallax"></div>
     <div style="text-align: center;">
-        <h1 style="display: inline-block; border: 2px solid black; padding: 10px;">Welcome to Writle, the nexus of creativity and organization for writers and visionaries. Here, we transform the chaos of creative thoughts into a coherent tapestry of ideas. Writle is more than just a writing app; it's a digital sanctuary for your narratives, notes, and notions. Our platform addresses the quintessential challenge of managing scattered notes by seamlessly integrating them into your writing process. Imagine an environment where characters, locations, and plot elements are effortlessly woven into your stories through intuitive cross-referencing. With Writle, your workspace is customizable, ensuring a uniquely tailored experience that caters to your creative workflow. Whether you're a novelist, a student, or a content creator, Writle is designed to streamline your writing journey, making it as boundless as your imagination.</h1>
+      <!--This didn't work but it solves the issue of everything kinda looking weird, so I guess I'll take it?-->
+      <section class="yellow"><h1>Welcome to Writle, the nexus of creativity and organization for writers and visionaries.</h1>
+      <h2>Here, we transform the chaos of creative thoughts into a coherent tapestry of ideas. Writle is more than just a writing app; it's a digital sanctuary for your narratives, notes, and notions. Our platform addresses the quintessential challenge of managing scattered notes by seamlessly integrating them into your writing process. Imagine an environment where characters, locations, and plot elements are effortlessly woven into your stories through intuitive cross-referencing. With Writle, your workspace is customizable, ensuring a uniquely tailored experience that caters to your creative workflow. Whether you're a novelist, a student, or a content creator, Writle is designed to streamline your writing journey, making it as boundless as your imagination.</h2></section>
     </div>
     <footer>
         Copyright © 2024, Writle. All rights reserved
