@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Home</title>
+  <link rel="stylesheet" href="mrowww.css">
   <style>
     body, html {
       height: 100%;
@@ -46,9 +47,9 @@
   </header>
 
   <div class="content-box" id="defaultContent">
-    <button onclick="showCreateForm()">CREATE NEW</button>
+    <button class="button-3" role="button" onclick="showCreateForm()" >Create New</button>
     <% if (projs && projs.length > 0) { %>
-      <button onclick="showExistingForm()">VIEW EXISTING PROJECTS</button>
+      <button class="button-3" role="button" onclick="showExistingForm()" >View existing projects</button>
     <% } %>
     </div>
 
