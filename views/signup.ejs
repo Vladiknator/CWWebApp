@@ -5,10 +5,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sign Up</title>
+  <link rel="stylesheet" href="mrowww.css">
 </head>
 
-<body>
-  <h1>Sign Up</h1>
+<body style=background-color:#1c87c9;>
+  <h3>Sign Up</h3>
   <form action="/signup" method="post" autocomplete="off">
     <input type="text" name="username" id="username" placeholder="Username" />
     <br />
@@ -17,7 +18,7 @@
     <br />
     <input type="password" name="password2" id="password2" placeholder="Confirm Password" />
     <br />
-    <input type="submit" value="Submit" />
+    <button class="button-3" role="button" input type="submit" value="Submit">Submit</button>
   </form>
   <p><%= locals.error ? error : '' %></p>
 </body>
