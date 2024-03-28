@@ -4,33 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Writle</title>
-    <link rel="stylesheet" href="mrowww.css">
-    <script src="script. js"></script>
+    <!-- Bootstrap, CSS and JS go here. -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="index.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>src="index.js"</script>
     <style>
     </style>
 </head>
 <body>
     <header>
-      <ul class="nav">  
-        <a href="/signup" target="blank"> 
-            <button class="button-3" role="button">Sign up!</button></a>
-            <a href="/login" target="blank"> 
-            <button class="button-3" role="button">Login</button></a>
-        </ul>
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/signup" target="_blank">Sign up</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login" target="_blank">Login</a>
+                </li>
+            </ul>
+            <!--Dark mode button-->
+            <button class="btn btn-outline-dark btn-light-mode" id="darkModeToggle">Dark Mode</button>
+        </nav>
     </header>
-    <div class="wrapper">
-      <div class="typing-demo">
-        Writle
-      </div>
-  </div>
-  <div class="parallax"></div>
-    <div style="text-align: center;">
-      <!--This didn't work but it solves the issue of everything kinda looking weird, so I guess I'll take it?-->
-      <section class="yellow"><h1>Welcome to Writle, the nexus of creativity and organization for writers and visionaries.</h1>
-      <h2>Here, we transform the chaos of creative thoughts into a coherent tapestry of ideas. Writle is more than just a writing app; it's a digital sanctuary for your narratives, notes, and notions. Our platform addresses the quintessential challenge of managing scattered notes by seamlessly integrating them into your writing process. Imagine an environment where characters, locations, and plot elements are effortlessly woven into your stories through intuitive cross-referencing. With Writle, your workspace is customizable, ensuring a uniquely tailored experience that caters to your creative workflow. Whether you're a novelist, a student, or a content creator, Writle is designed to streamline your writing journey, making it as boundless as your imagination.</h2></section>
+    <div class="container">
+      <!--Fancy CSS animation-->
+        <div class="typing-demo">
+            Writle.
+        </div>
     </div>
-    <footer>
-        Copyright © 2024, Writle. All rights reserved
+    <div class="parallax"></div>
+    <div class="container text-center">
+        <section class="yellow">
+            <h1>Welcome to Writle, the nexus of creativity and organization for writers and visionaries.</h1>
+            <h2>Here, we transform the chaos of creative thoughts into a coherent tapestry of ideas. Writle is more than just a writing app; it's a digital sanctuary for your narratives, notes, and notions. Our platform addresses the quintessential challenge of managing scattered notes by seamlessly integrating them into your writing process. Imagine an environment where characters, locations, and plot elements are effortlessly woven into your stories through intuitive cross-referencing. With Writle, your workspace is customizable, ensuring a uniquely tailored experience that caters to your creative workflow. Whether you're a novelist, a student, or a content creator, Writle is designed to streamline your writing journey, making it as boundless as your imagination.</h2>
+        </section>
+    </div>
+    <footer class="footer mt-auto py-3">
+        <div class="container text-center">
+            Copyright © 2024, Writle. All rights reserved
+        </div>
     </footer>
+    <script>
+      // JavaScript for toggling dark mode and updating button text, still need to find out why this breaks whenever i put it into index.js
+      const darkModeButton = document.getElementById('darkModeToggle');
+
+      darkModeButton.addEventListener('click', function () {
+          document.body.classList.toggle('dark-mode');
+          if (document.body.classList.contains('dark-mode')) {
+              darkModeButton.textContent = 'Light Mode';
+              darkModeButton.classList.remove('btn-outline-dark');
+              darkModeButton.classList.add('btn-dark');
+          } else {
+              darkModeButton.textContent = 'Dark Mode';
+              darkModeButton.classList.remove('btn-dark');
+              darkModeButton.classList.add('btn-outline-dark');
+          }
+      });
+  </script>
 </body>
 </html>
