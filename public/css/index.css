@@ -1,24 +1,26 @@
-body {
-  margin-top: 100px;
-}
-header {
-  position: fixed;
-  left: 0;
-  top: 0;
-  height: 3%;
-  width: 100%;
-  text-align: center;
-  background-color: aquamarine;
-  padding: 10px 0;
+html {
+  height: 100%;
 }
 
-footer {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  height: 3%;
-  width: 100%;
-  text-align: center;
-  background-color: aquamarine;
-  padding: 10px 0;
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin-top: 56px; 
+}
+
+main {
+  flex: 1;
+}
+
+
+.navbar-custom, .footer-custom {
+  background-color: #7FE2B2 !important;
+  color: white !important;
+}
+
+.navbar-custom .navbar-brand, 
+.navbar-custom .nav-link, 
+.footer-custom a {
+  color: white !important;
 }
