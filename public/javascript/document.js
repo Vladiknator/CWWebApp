@@ -2,7 +2,7 @@ let noteJSON;
 let collIndex = 0;
 let editors;
 let matchingArray;
-const projId = document.getElementById('proj_id').value;
+const projId = document.getElementById('proj-id').value;
 
 const tinyMCEConfig = {
   selector: 'textarea#document',
@@ -25,6 +25,38 @@ const tinyMCEConfig = {
     'body { font-family:Helvetica,Arial,sans-serif; font-size:16px; overflow-y: scroll}',
 };
 
+// Initial page load
+async function loadApp() {
+  // eslint-disable-next-line no-undef
+  editors = await tinymce.init(tinyMCEConfig);
+  const aliasButton = document.getElementById('test-alias');
+  aliasButton.addEventListener(
+    'click',
+    highlightAliases.bind(null, editors[0]),
+  );
+  getNotesData();
+
+  // Bind collections traversal buttons
+  const nextButton = document.getElementById('next-collection');
+  nextButton.addEventListener('click', nextCollection);
+  const prevButton = document.getElementById('prev-collection');
+  prevButton.addEventListener('click', prevCollection);
+
+  // Bind Submit override to form
+  document.getElementById('editor-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    submitForm(true);
+  });
+
+  // Autosave the form once a minuite without redirecting
+  setInterval(() => submitForm(false), 60000);
+}
+
+// Load the app
+loadApp();
+
+/* Retrieve collections from server and load collcection 1 into collections tab,
+create matching array from aliases and highlight editor */
 async function getNotesData() {
   const noteRawData = await fetch(`notes/${projId}`);
   noteJSON = await noteRawData.json();
@@ -33,13 +65,15 @@ async function getNotesData() {
   highlightAliases(editors[0]);
 }
 
+// Load collection into collection pane
 function loadCollection(i) {
   const coll = noteJSON[i];
   collIndex = i;
-  const title = document.getElementById('collectionTitle');
+  const title = document.getElementById('collection-title');
   title.textContent = coll.title;
   const entries = document.getElementById('entries');
   entries.replaceChildren();
+  // For each note create nodes and append them to entryDiv
   coll.notes.forEach((e) => {
     const entryDiv = document.createElement('div');
     entryDiv.className = 'entry';
@@ -64,6 +98,7 @@ function loadCollection(i) {
   });
 }
 
+// Functions to switch between collections for back and forward buttons
 function nextCollection() {
   if (collIndex + 1 < noteJSON.length) {
     loadCollection(collIndex + 1);
@@ -81,6 +116,7 @@ function prevCollection() {
   loadCollection(collIndex);
 }
 
+// Move to correct collection and highligt selected note after clicking on highlighted text in editor
 function selectNote(targetId, color) {
   const foundIndex = noteJSON.findIndex((c) =>
     c.notes.some((note) => note.id === targetId),
@@ -104,9 +140,10 @@ function selectNote(targetId, color) {
   // Remove the highlight after a delay
   setTimeout(() => {
     target.classList.remove('highlight');
-  }, 1300); // 2000ms = 2 seconds
+  }, 1300); // 1000ms = 1 seconds
 }
 
+// Escape special chars in regex
 function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
@@ -144,21 +181,21 @@ function createMatchingArray(collections) {
   return matchingArrayLocal;
 }
 
+// Add highlights to editor using matching array
 function highlightAliases(editor) {
   removeHighlights();
-  // Use the TinyMCE API to traverse the editor's content
+  // get all children of the editor body
   const body = editor.getBody();
   const { children } = body;
 
-  // eslint-disable-next-line no-undef
-
+  // Loop through all direct children of the editor body
   Array.from(children).forEach((child) => {
-    // Access each child element here
+    // Walk through each child node using the tinyMCE api
     // eslint-disable-next-line no-undef
     const walker = new tinymce.dom.TreeWalker(child);
 
     do {
-      console.log(walker.current());
+      // only start doing regex matches if the current node is a text node
       if (walker.current().nodeType === 3) {
         const currentNode = walker.current();
         const { parentNode } = currentNode;
@@ -168,9 +205,6 @@ function highlightAliases(editor) {
         matchingArray.forEach((entry) => {
           entry.regex.forEach((regex) => {
             const matches = [...currentText.matchAll(regex)];
-            // console.log(currentText);
-            // console.log(regex);
-            // console.log(matches);
             if (matches.length > 0) {
               matches.forEach((match) => {
                 const found = {
@@ -234,6 +268,7 @@ function highlightAliases(editor) {
   });
 }
 
+// Remove all highlights from editor
 function removeHighlights() {
   const spans = document
     .getElementById('document_ifr')
@@ -260,6 +295,41 @@ function removeHighlights() {
   } while (walker.next());
 }
 
+// Handle editor form posting
+function submitForm(redirectOnResponse) {
+  // eslint-disable-next-line no-undef
+  tinymce.get('document').save();
+  removeHighlights();
+  const formData = new URLSearchParams(
+    new FormData(document.getElementById('editor-form')),
+  );
+  highlightAliases(editors[0]);
+
+  fetch('/document', {
+    method: 'POST',
+    body: formData,
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      if (redirectOnResponse && response.redirected) {
+        window.location.href = response.url;
+      } else {
+        return response.text();
+      }
+    })
+    .then((data) => {
+      if (data) {
+        console.log('Autosave Successful');
+      }
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+}
+
+// Calculate if white or black has better contrast
 function getContrastColor(hexColor) {
   // Convert the hex color to RGB
   const r = parseInt(hexColor.substr(1, 2), 16);
@@ -272,21 +342,3 @@ function getContrastColor(hexColor) {
   // Return black for bright colors, white for dark colors
   return brightness > 128 ? 'black' : 'white';
 }
-
-async function loadApp() {
-  // eslint-disable-next-line no-undef
-  editors = await tinymce.init(tinyMCEConfig);
-  const aliasButton = document.getElementById('testAlias');
-  aliasButton.addEventListener(
-    'click',
-    highlightAliases.bind(null, editors[0]),
-  );
-  getNotesData();
-}
-
-loadApp();
-
-const nextButton = document.getElementById('nextCollection');
-nextButton.addEventListener('click', nextCollection);
-const prevButton = document.getElementById('prevCollection');
-prevButton.addEventListener('click', prevCollection);

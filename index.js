@@ -259,7 +259,7 @@ app.post('/deleteCollection', sessionCheck, async (req, res) => {
 
 // Update the values of a document after editing
 app.post('/document', sessionCheck, async (req, res) => {
-  const title = req.body.Title;
+  const { title } = req.body;
   const body = req.body.editor;
   const { id } = req.body;
   await doSQL('update docs set title=$1, body=$2 where id=$3', [

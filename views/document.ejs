@@ -13,26 +13,26 @@
   <script src="/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
   <div class="grid-container">
     <div class="grid-item" id="grid-editor">
-      <form id="editor-form" action="/document" method="post" onsubmit="removeHighlights()">
+      <form id="editor-form">
         <% if (locals.doc) { %>
-        <input type="hidden" id="proj_id" value="<%= doc.proj_id %>">
+        <input type="hidden" id="proj-id" value="<%= doc.proj_id %>">
         <input type="hidden" name="id" value="<%= doc.id %>">
         <% } %>
-        <input type="text" name="Title" id="Title" placeholder="Title" value="<%= locals.doc ? doc.title : '' %>" /> <br />
+        <input type="text" name="title" id="title" placeholder="Title" value="<%= locals.doc ? doc.title : '' %>" /> <br />
         <textarea name="editor" id="document"><%= locals.doc ? doc.body : '' %></textarea>
         <div class="form-buttons">
-          <button id="testAlias" type="button">Reload Aliases</button>
-          <button id="removeAlias" type="button" onclick="removeHighlights()">Remove Aliases</button>
+          <button id="test-alias" type="button">Reload Aliases</button>
+          <button id="remove-alias" type="button" onclick="removeHighlights()">Remove Aliases</button>
           <button type="submit">Submit</button>
         </div>
       </form>
     </div>
     <div class="grid-item" id="grid-coll">
-      <div id="currentCollection">
+      <div id="current-collection">
         <div class="buttons">
-          <button id="prevCollection">&larr;</button> <button id="nextCollection">&rarr;</button>
+          <button id="prev-collection">&larr;</button> <button id="next-collection">&rarr;</button>
         </div>
-        <h1 id="collectionTitle"></h1>
+        <h1 id="collection-title"></h1>
         <div id="entries"></div>
       </div>
     </div>
