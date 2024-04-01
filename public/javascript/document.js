@@ -11,8 +11,19 @@ const tinyMCEConfig = {
     'preview importcss searchreplace autolink save directionality code visualblocks visualchars fullscreen link codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons accordion',
   menubar: 'file edit view insert format tools table help',
   toolbar:
-    'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | table | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | save print | pagebreak anchor codesample | ltr rtl',
+    'save exportdocx | undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | table | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | save print | pagebreak anchor codesample | ltr rtl',
   importcss_append: true,
+  save_onsavecallback: () => {
+    submitForm(false);
+  },
+  setup: (editor) => {
+    editor.ui.registry.addButton('exportdocx', {
+      text: 'Save .docx',
+      onAction: (_) => {
+        editor.save();
+      },
+    });
+  },
   height: '80vh',
   quickbars_selection_toolbar:
     'bold italic | quicklink h2 h3 blockquote quicktable',

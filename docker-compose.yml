@@ -1,4 +1,4 @@
-version: "3.9"
+version: '3.9'
 services:
   app:
     build:
@@ -13,7 +13,7 @@ services:
       - .:/home/node/app
       - node_modules:/home/node/app/node_modules
     ports:
-      - "80:3000"
+      - '80:3000'
     networks:
       - app-network
   db:
@@ -25,6 +25,11 @@ services:
       POSTGRES_DB: creativewriting
     volumes:
       - ./DatabaseDevScript.sql:/docker-entrypoint-initdb.d/DatabaseDevScript.sql
+    networks:
+      - app-network
+  converter:
+    image: lynxtaa/unoserver-web
+    container_name: converter
     networks:
       - app-network
 
