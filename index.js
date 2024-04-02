@@ -327,7 +327,7 @@ app.get('/downloadDoc/:id/:format', sessionCheck, async (req, res) => {
   const { id, format } = req.params;
   const entry = (await doSQL('select * from docs where id = $1', [id])).rows;
   const response = await axios.post(
-    `http://converter:3000/convert/${format}`,
+    `http://converter:4000/convert/${format}`,
     entry.body,
     { responseType: 'arraybuffer' },
   );
