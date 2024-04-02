@@ -4,6 +4,7 @@ let editors;
 let matchingArray;
 const projId = document.getElementById('proj-id').value;
 const docId = document.getElementById('doc-id').value;
+const docTitle = document.getElementById('title').value;
 
 function download(id, format) {
   fetch(`/downloadDoc/${id}/${format}`)
@@ -12,7 +13,7 @@ function download(id, format) {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${id}.${format}`;
+      a.download = `${docTitle}.${format}`;
       document.body.appendChild(a);
       a.click();
       a.remove();

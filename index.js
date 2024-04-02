@@ -328,14 +328,11 @@ app.post('/collection', sessionCheck, async (req, res) => {
 // Download document as a format
 app.get('/downloadDoc/:id/:format', sessionCheck, async (req, res) => {
   const { id, format } = req.params;
-  const entry = (await doSQL('select * from docs where id = $1', [id])).rows;
+  const entry = (
+    await doSQL('select * from docs where id = $1', [parseInt(id)])
+  ).rows[0];
   const html = `<html><body>${entry.body}</body></html>`;
   const uuid = uuidv4();
-  // const response = await axios(
-  //   `http://converter:4000/convert/${format}`,
-  //   entry.body,
-  //   { responseType: 'arraybuffer' },
-  // );
 
   // Write the string to a temporary file
   fs.writeFile(`${uuid}.html`, html, (err) => {
@@ -353,21 +350,26 @@ app.get('/downloadDoc/:id/:format', sessionCheck, async (req, res) => {
       url: `http://converter:4000/convert/${format}`,
       data: form,
       headers: form.getHeaders(),
+      responseType: 'stream',
     })
       .then((response) => {
-        // Write the returned docx file
-        res.setHeader(
-          'Content-Disposition',
-          `attachment; filename=${id}.${format}`,
-          'Content-Type',
-          'application/octet-stream',
-        );
-        res.send(response.data);
+        const filePath = `/${uuid}.pdf`;
+        const writer = fs.createWriteStream(filePath);
+        response.data.pipe(writer);
+        writer.on('finish', () => {
+          // send the resulting file to a new location
+          res.sendFile(filePath);
+        });
       })
       .catch((error) => {
         console.log(error);
         res.status(404);
       });
+
+    fs.unlink(`${uuid}.html`, (err) => {
+      if (err) throw err;
+      console.log('path/file.txt was deleted');
+    });
   });
 });
 
