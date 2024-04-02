@@ -5,6 +5,9 @@ import { fileURLToPath } from 'url';
 import pg from 'pg';
 import cookieSession from 'cookie-session';
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
+import FormData from 'form-data';
+import fs from 'fs';
 
 // Express middleware and constants set up
 const app = express();
@@ -326,14 +329,44 @@ app.post('/collection', sessionCheck, async (req, res) => {
 app.get('/downloadDoc/:id/:format', sessionCheck, async (req, res) => {
   const { id, format } = req.params;
   const entry = (await doSQL('select * from docs where id = $1', [id])).rows;
-  const response = await axios.post(
-    `http://converter:4000/convert/${format}`,
-    entry.body,
-    { responseType: 'arraybuffer' },
-  );
+  const html = `<html><body>${entry.body}</body></html>`;
+  const uuid = uuidv4();
+  // const response = await axios(
+  //   `http://converter:4000/convert/${format}`,
+  //   entry.body,
+  //   { responseType: 'arraybuffer' },
+  // );
 
-  res.setHeader('Content-Disposition', `attachment; filename=${id}.${format}`);
-  res.send(response.data);
+  // Write the string to a temporary file
+  fs.writeFile(`${uuid}.html`, html, (err) => {
+    if (err) throw err;
+
+    // Create a form
+    const form = new FormData();
+
+    // Append the file to the form
+    form.append('file', fs.createReadStream(`${uuid}.html`));
+
+    // Send the file using axios
+    axios({
+      method: 'post',
+      url: `http://converter:4000/convert/${format}`,
+      data: form,
+      headers: form.getHeaders(),
+    })
+      .then((response) => {
+        // Write the returned docx file
+        res.setHeader(
+          'Content-Disposition',
+          `attachment; filename=${id}.${format}`,
+        );
+        res.send(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+        res.status(404);
+      });
+  });
 });
 
 // Admin API routes
