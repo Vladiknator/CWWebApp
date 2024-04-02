@@ -32,13 +32,13 @@ const tinyMCEConfig = {
     submitForm(false);
   },
   setup: (editor) => {
-    editor.ui.registry.addButton('export', {
+    editor.ui.registry.addMenuButton('export', {
       text: 'Export Doc',
       fetch: (callback) => {
         const items = [
           {
             type: 'menuitem',
-            text: 'Save Docx',
+            text: 'Export Docx',
             onAction: () => {
               editor.save();
               download(docId, 'docx');
@@ -46,7 +46,7 @@ const tinyMCEConfig = {
           },
           {
             type: 'menuitem',
-            text: 'Save PDF',
+            text: 'Export PDF',
             onAction: () => {
               editor.save();
               download(docId, 'pdf');
