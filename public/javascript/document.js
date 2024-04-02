@@ -3,7 +3,7 @@ let collIndex = 0;
 let editors;
 let matchingArray;
 const projId = document.getElementById('proj-id').value;
-const docId = document.getElementById('id').value;
+const docId = document.getElementById('doc-id').value;
 
 function download(id, format) {
   fetch(`/download/${id}/${format}`)

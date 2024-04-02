@@ -18,7 +18,7 @@
       <form id="editor-form" method="post" action="/document">
         <% if (locals.doc) { %>
         <input type="hidden" id="proj-id" value="<%= doc.proj_id %>">
-        <input type="hidden" name="id" value="<%= doc.id %>">
+        <input type="hidden" id="doc-id" name="id" value="<%= doc.id %>">
         <% } %>
         <input type="text" name="title" id="title" placeholder="Title" value="<%= locals.doc ? doc.title : '' %>" /> <br />
         <textarea name="editor" id="document"><%= locals.doc ? doc.body : '' %></textarea>
