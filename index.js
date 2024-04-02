@@ -359,6 +359,8 @@ app.get('/downloadDoc/:id/:format', sessionCheck, async (req, res) => {
         res.setHeader(
           'Content-Disposition',
           `attachment; filename=${id}.${format}`,
+          'Content-Type',
+          'application/octet-stream',
         );
         res.send(response.data);
       })
