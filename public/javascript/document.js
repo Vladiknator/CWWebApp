@@ -6,7 +6,7 @@ const projId = document.getElementById('proj-id').value;
 const docId = document.getElementById('doc-id').value;
 
 function download(id, format) {
-  fetch(`/download/${id}/${format}`)
+  fetch(`/downloadDoc/${id}/${format}`)
     .then((response) => response.blob())
     .then((blob) => {
       const url = window.URL.createObjectURL(blob);
