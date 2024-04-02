@@ -333,6 +333,12 @@ app.get('/downloadDoc/:id/:format', sessionCheck, async (req, res) => {
   ).rows[0];
   const html = `<html><body>${entry.body}</body></html>`;
   const uuid = uuidv4();
+  const query = function () {
+    if (format === 'docx') {
+      return '?filter=MS Word 2007 XML';
+    }
+    return '';
+  };
 
   // Write the string to a temporary file
   fs.writeFile(`${uuid}.html`, html, (err) => {
@@ -347,29 +353,29 @@ app.get('/downloadDoc/:id/:format', sessionCheck, async (req, res) => {
     // Send the file using axios
     axios({
       method: 'post',
-      url: `http://converter:4000/convert/${format}`,
+      url: `http://converter:4000/convert/${format + query()}`,
       data: form,
       headers: form.getHeaders(),
       responseType: 'stream',
     })
       .then((response) => {
-        const filePath = `/${uuid}.pdf`;
+        const filePath = `/${uuid}.${format}`;
         const writer = fs.createWriteStream(filePath);
         response.data.pipe(writer);
         writer.on('finish', () => {
           // send the resulting file to a new location
           res.sendFile(filePath);
+          fs.unlink(`${uuid}.html`, (err) => {
+            if (err) throw err;
+            console.log(`${uuid}.html was deleted`);
+          });
         });
       })
       .catch((error) => {
         console.log(error);
         res.status(404);
+        res.send();
       });
-
-    fs.unlink(`${uuid}.html`, (err) => {
-      if (err) throw err;
-      console.log('path/file.txt was deleted');
-    });
   });
 });
 
