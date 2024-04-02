@@ -4,6 +4,7 @@ import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import pg from 'pg';
 import cookieSession from 'cookie-session';
+import axios from 'axios';
 
 // Express middleware and constants set up
 const app = express();
@@ -319,6 +320,20 @@ app.post('/collection', sessionCheck, async (req, res) => {
   });
 
   res.redirect(`/project/${req.session.currentProj}`);
+});
+
+// Download document as a format
+app.get('/downloadDoc/:id/:format', sessionCheck, async (req, res) => {
+  const { id, format } = req.params;
+  const entry = (await doSQL('select * from docs where id = $1', [id])).rows;
+  const response = await axios.post(
+    `http://converter:3000/convert/${format}`,
+    entry.body,
+    { responseType: 'arraybuffer' },
+  );
+
+  res.setHeader('Content-Disposition', `attachment; filename=${id}.${format}`);
+  res.send(response.data);
 });
 
 // Admin API routes

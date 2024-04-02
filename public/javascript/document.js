@@ -3,6 +3,21 @@ let collIndex = 0;
 let editors;
 let matchingArray;
 const projId = document.getElementById('proj-id').value;
+const docId = document.getElementById('id').value;
+
+function download(id, format) {
+  fetch(`/download/${id}/${format}`)
+    .then((response) => response.blob())
+    .then((blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${id}.${format}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    });
+}
 
 const tinyMCEConfig = {
   selector: 'textarea#document',
@@ -11,16 +26,34 @@ const tinyMCEConfig = {
     'preview importcss searchreplace autolink save directionality code visualblocks visualchars fullscreen link codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons accordion',
   menubar: 'file edit view insert format tools table help',
   toolbar:
-    'save exportdocx | undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | table | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | save print | pagebreak anchor codesample | ltr rtl',
+    'save export | undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | table | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | save print | pagebreak anchor codesample | ltr rtl',
   importcss_append: true,
   save_onsavecallback: () => {
     submitForm(false);
   },
   setup: (editor) => {
-    editor.ui.registry.addButton('exportdocx', {
-      text: 'Save .docx',
-      onAction: (_) => {
-        editor.save();
+    editor.ui.registry.addButton('export', {
+      text: 'Export Doc',
+      fetch: (callback) => {
+        const items = [
+          {
+            type: 'menuitem',
+            text: 'Save Docx',
+            onAction: () => {
+              editor.save();
+              download(docId, 'docx');
+            },
+          },
+          {
+            type: 'menuitem',
+            text: 'Save PDF',
+            onAction: () => {
+              editor.save();
+              download(docId, 'pdf');
+            },
+          },
+        ];
+        callback(items);
       },
     });
   },

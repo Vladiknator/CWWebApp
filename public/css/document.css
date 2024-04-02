@@ -50,7 +50,7 @@ body {
   background: #6effb9;
 }
 
-#currentCollection {
+#current-collection {
   display: flex;
   flex-direction: column;
   height: 100%;

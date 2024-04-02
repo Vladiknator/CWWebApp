@@ -30,6 +30,8 @@ services:
   converter:
     image: lynxtaa/unoserver-web
     container_name: converter
+    environment:
+      - PORT=4000
     networks:
       - app-network
 
