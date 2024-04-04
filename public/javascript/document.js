@@ -23,18 +23,20 @@ function download(id, format) {
 const tinyMCEConfig = {
   selector: 'textarea#document',
   promotion: false,
+  icons_url: 'public/icons/writle-custom-icons/icons.js',
+  icons: 'writle-custom-icons',
   plugins:
     'preview importcss searchreplace autolink save directionality code visualblocks visualchars fullscreen link codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons accordion',
   menubar: 'file edit view insert format tools table help',
   toolbar:
-    'save export | undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | table | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | save print | pagebreak anchor codesample | ltr rtl',
+    'save submit export notes | undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | table | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | save print | pagebreak anchor codesample | ltr rtl',
   importcss_append: true,
   save_onsavecallback: () => {
     submitForm(false);
   },
   setup: (editor) => {
     editor.ui.registry.addMenuButton('export', {
-      text: 'Export Doc',
+      text: 'Export',
       fetch: (callback) => {
         const items = [
           {
@@ -57,6 +59,41 @@ const tinyMCEConfig = {
         callback(items);
       },
     });
+
+    editor.ui.registry.addMenuButton('notes', {
+      text: 'Notes',
+      fetch: (callback) => {
+        const items = [
+          {
+            type: 'menuitem',
+            text: 'Reload Highlights',
+            onAction: () => {
+              highlightAliases(editor);
+              editor.save();
+            },
+          },
+          {
+            type: 'menuitem',
+            text: 'Remove Highlights',
+            onAction: () => {
+              removeHighlights();
+              editor.save();
+            },
+          },
+        ];
+        callback(items);
+      },
+    });
+
+    editor.ui.registry.addButton('submit', {
+      icon: 'submit',
+      text: 'Submit',
+      tooltip: 'Submit Document Changes',
+      onAction: () => {
+        const submitButton = document.getElementById('doc-submit');
+        submitButton.click();
+      },
+    });
   },
   height: '80vh',
   quickbars_selection_toolbar:
@@ -74,11 +111,6 @@ const tinyMCEConfig = {
 async function loadApp() {
   // eslint-disable-next-line no-undef
   editors = await tinymce.init(tinyMCEConfig);
-  const aliasButton = document.getElementById('test-alias');
-  aliasButton.addEventListener(
-    'click',
-    highlightAliases.bind(null, editors[0]),
-  );
   getNotesData();
 
   // Bind collections traversal buttons
@@ -121,23 +153,30 @@ function loadCollection(i) {
   // For each note create nodes and append them to entryDiv
   coll.notes.forEach((e) => {
     const entryDiv = document.createElement('div');
-    entryDiv.className = 'entry';
+    entryDiv.classList.add('entry', 'card', 'm-2');
     entryDiv.id = e.id;
 
-    const entryTitle = document.createElement('h3');
-    entryTitle.textContent = `Title: ${e.title}`;
-    entryDiv.appendChild(entryTitle);
+    const cardBody = document.createElement('div');
+    cardBody.classList.add('card-body');
+    entryDiv.appendChild(cardBody);
 
-    const alias = document.createElement('p');
+    const entryTitle = document.createElement('h5');
+    entryTitle.textContent = `Title: ${e.title}`;
+    entryTitle.classList.add('card-title');
+    cardBody.appendChild(entryTitle);
+
+    const alias = document.createElement('h6');
+    alias.classList.add('card-subtitle', 'mb-2', 'text-body-secondary');
     const aliasSpan = document.createElement('span');
     aliasSpan.textContent = `Aliases: ${e.alias}`;
     aliasSpan.style = `background-color: ${e.color}80; color: ${getContrastColor(e.color)};`;
     alias.appendChild(aliasSpan);
-    entryDiv.appendChild(alias);
+    cardBody.appendChild(alias);
 
     const note = document.createElement('div');
+    note.classList.add('card-text');
     note.innerHTML = e.note;
-    entryDiv.appendChild(note);
+    cardBody.appendChild(note);
 
     entries.appendChild(entryDiv);
   });
