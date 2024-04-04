@@ -106,6 +106,11 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// Show about page
+app.get('/about', (req, res) => {
+  res.render('about', { user: req.session.username }); // Pass session username if needed
+});
+
 // Show sign up page
 app.get('/signup', (req, res) => {
   res.render('signup');
@@ -117,7 +122,7 @@ app.post('/signup', async (req, res) => {
   const { password } = req.body;
   const { email } = req.body;
   const { password2 } = req.body;
-  // Check to make suer passwords match, if yes create account and go back to login, if not reset page and give error
+  // Check to make sure passwords match, if yes create account and go back to login, if not reset page and give error
   if (password === password2) {
     await doSQL(
       'Insert into users (username, password, email) values ($1, $2, $3)',
