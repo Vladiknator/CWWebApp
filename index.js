@@ -106,11 +106,6 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Show about page
-app.get('/about', (req, res) => {
-  res.render('about', { user: req.session.username }); // Pass session username if needed
-});
-
 // Show sign up page
 app.get('/signup', (req, res) => {
   res.render('signup');
@@ -175,6 +170,16 @@ app.get('/project/:projId', sessionCheck, async (req, res) => {
     ]);
     res.render('project', { docs: docs.rows, colls: colls.rows });
   }
+});
+
+// Render profile page
+app.get('/profile', sessionCheck, (req, res) => {
+  res.render('profile', { user: req.session.username });
+});
+
+// Render about page
+app.get('/about', sessionCheck, (req, res) => {
+  res.render('about', { user: req.session.username });
 });
 
 // Open a selected document
