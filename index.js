@@ -333,6 +333,7 @@ app.get('/downloadDoc/:id/:format', sessionCheck, async (req, res) => {
   ).rows[0];
   const html = `<html><body>${entry.body}</body></html>`;
   const uuid = uuidv4();
+  // Set the necessary filter for word doc exports
   const query = function () {
     if (format === 'docx') {
       return '?filter=MS Word 2007 XML';
@@ -363,7 +364,7 @@ app.get('/downloadDoc/:id/:format', sessionCheck, async (req, res) => {
         const writer = fs.createWriteStream(filePath);
         response.data.pipe(writer);
         writer.on('finish', () => {
-          // send the resulting file to a new location
+          // send the resulting file to a new location and delete the temp file
           res.sendFile(filePath);
           fs.unlink(`${uuid}.html`, (err) => {
             if (err) throw err;
