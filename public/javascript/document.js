@@ -29,7 +29,7 @@ const tinyMCEConfig = {
     'preview importcss searchreplace autolink save directionality code visualblocks visualchars fullscreen link codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons accordion',
   menubar: 'file edit view insert format tools table help',
   toolbar:
-    'save submit export notes | undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | table | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | save print | pagebreak anchor codesample | ltr rtl',
+    'save submit export notes share | undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | table | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | save print | pagebreak anchor codesample | ltr rtl',
   importcss_append: true,
   save_onsavecallback: () => {
     submitForm(false);
@@ -42,6 +42,7 @@ const tinyMCEConfig = {
           {
             type: 'menuitem',
             text: 'Export Docx',
+            icon: 'export-word',
             onAction: () => {
               editor.save();
               download(docId, 'docx');
@@ -50,6 +51,7 @@ const tinyMCEConfig = {
           {
             type: 'menuitem',
             text: 'Export PDF',
+            icon: 'export-pdf',
             onAction: () => {
               editor.save();
               download(docId, 'pdf');
@@ -94,8 +96,22 @@ const tinyMCEConfig = {
         submitButton.click();
       },
     });
+
+    editor.ui.registry.addButton('share', {
+      icon: 'share',
+      tooltip: 'Share Document',
+      onAction: () => {
+        // ToDo: Add share functionality
+        // eslint-disable-next-line no-undef
+        const myModal = new bootstrap.Modal(
+          document.getElementById('share-modal'),
+        );
+        myModal.show();
+      },
+    });
   },
   height: '80vh',
+  resize: false,
   quickbars_selection_toolbar:
     'bold italic | quicklink h2 h3 blockquote quicktable',
   noneditable_class: 'mceNonEditable',
@@ -125,8 +141,12 @@ async function loadApp() {
     submitForm(true);
   });
 
-  // Autosave the form once a minuite without redirecting
-  setInterval(() => submitForm(false), 60000);
+  // Autosave the form once a minuite without redirecting if the editor has been modified since last save
+  setInterval(() => {
+    if (editors[0].isDirty()) {
+      submitForm(false);
+    }
+  }, 60000);
 }
 
 // Load the app

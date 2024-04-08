@@ -2,27 +2,6 @@ body {
   height: 100vh;
 }
 
-.grid-container {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 1rem;
-  grid-auto-rows: minmax(100px, auto);
-  height: 95vh;
-}
-
-.grid-item {
-  background-color: rgb(244, 255, 252);
-  border-radius: 1em;
-}
-
-#grid-editor {
-  grid-column: 1;
-}
-
-#grid-coll {
-  grid-column: 2;
-}
-
 .buttons {
   display: flex;
   justify-content: space-between;
