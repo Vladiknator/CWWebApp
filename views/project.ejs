@@ -84,6 +84,11 @@
               <input type="hidden" name="documentId" value="<%= doc.id %>">
               <button class="dropdown-item" type="submit">Delete</button>
             </form>
+            <form action="/renameDocument" method="post">
+              <input type="hidden" name="documentId" value="<%= doc.id %>">
+              <input type="text" name="newTitle" placeholder="New title" required>
+              <button class="dropdown-item" type="submit">Rename</button>
+            </form>
           </div>
         </div>
       </div>
@@ -109,6 +114,11 @@
             <form action="/deleteCollection" method="post">
               <input type="hidden" name="collectionId" value="<%= coll.id %>">
               <button class="dropdown-item" type="submit">Delete</button>
+            </form>
+            <form action="/renameCollection" method="post">
+              <input type="hidden" name="collectionId" value="<%= coll.id %>">
+              <input type="text" name="newTitle" placeholder="New title" required>
+              <button class="dropdown-item" type="submit">Rename</button>
             </form>
           </div>
         </div>

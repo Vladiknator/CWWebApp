@@ -256,6 +256,36 @@ app.post('/deleteDocument', sessionCheck, async (req, res) => {
   }
 });
 
+// Route for renaming a document
+app.post('/renameDocument', sessionCheck, async (req, res) => {
+  const { documentId, newTitle } = req.body;
+  try {
+    await doSQL('UPDATE docs SET title = $1 WHERE id = $2', [
+      newTitle,
+      documentId,
+    ]);
+    res.redirect(`/project/${req.session.currentProj}`);
+  } catch (error) {
+    console.error('Error updating document title:', error);
+    res.status(500).send('Failed to update document title');
+  }
+});
+
+// Route for renaming a collection
+app.post('/renameCollection', sessionCheck, async (req, res) => {
+  const { collectionId, newTitle } = req.body;
+  try {
+    await doSQL('UPDATE collections SET title = $1 WHERE id = $2', [
+      newTitle,
+      collectionId,
+    ]);
+    res.redirect(`/project/${req.session.currentProj}`);
+  } catch (error) {
+    console.error('Error updating collection title:', error);
+    res.status(500).send('Failed to update collection title');
+  }
+});
+
 // Create a new collection
 app.post('/createcollection', sessionCheck, async (req, res) => {
   const { title } = req.body;
