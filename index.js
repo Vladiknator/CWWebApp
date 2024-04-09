@@ -301,10 +301,36 @@ app.get('/notes/:projId', async (req, res) => {
   res.json(combined);
 });
 
+/*
+Sharing Documents
+
+Create new table with links --- DONE
+Each link links to a specific document, each link is for one document while each document can have multiple links
+Links
+link-note: Write down what this link is for Identification
+UUID - PK: UUID that will act as the link in the uri
+Document - FK: Document that this link points to
+Notes - FK: Notes that this document links to
+includeNotes: Boolean of whether or not to include notes with this document
+
+Create API for getting, creating and deleting links for a document.
+
+Create a shared notes route that does not do a cookie check,
+it looks through link table for that UUID, finds if that UUID is linked to a note
+makes sure that this link comes with a note and if it does then return the corresponding note
+
+This ends up with a link like domain/shared/view/UUID
+which even without an account when opened it will take the user to a page showing the document
+*/
+
+// Need to change noteID in table to projID
+
 // Create Links API
 app.post('/document/link/create', sessionCheck, async (req, res) => {
   const { includeNotes } = req.body;
   const { linkNote } = req.body;
+  const { docId } = req.body;
+  const { projId } = req.body;
 });
 
 // Delete Link

@@ -5,7 +5,7 @@
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-04-09 12:43:40
+-- Started on 2024-04-09 13:38:13
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -53,7 +53,7 @@ CREATE SEQUENCE public.collections_id_seq
 ALTER SEQUENCE public.collections_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3451 (class 0 OID 0)
+-- TOC entry 3445 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: collections_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -93,7 +93,7 @@ CREATE SEQUENCE public.docs_id_seq
 ALTER SEQUENCE public.docs_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3452 (class 0 OID 0)
+-- TOC entry 3446 (class 0 OID 0)
 -- Dependencies: 218
 -- Name: docs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -102,7 +102,7 @@ ALTER SEQUENCE public.docs_id_seq OWNED BY public.docs.id;
 
 
 --
--- TOC entry 226 (class 1259 OID 16464)
+-- TOC entry 225 (class 1259 OID 16464)
 -- Name: links; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -110,7 +110,7 @@ CREATE TABLE public.links (
     link_note text,
     uuid uuid DEFAULT gen_random_uuid() NOT NULL,
     docid integer,
-    noteid integer,
+    projid integer,
     include_notes boolean
 );
 
@@ -151,7 +151,7 @@ CREATE SEQUENCE public.notes_id_seq
 ALTER SEQUENCE public.notes_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3453 (class 0 OID 0)
+-- TOC entry 3447 (class 0 OID 0)
 -- Dependencies: 220
 -- Name: notes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -190,27 +190,13 @@ CREATE SEQUENCE public.projects_id_seq
 ALTER SEQUENCE public.projects_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3454 (class 0 OID 0)
+-- TOC entry 3448 (class 0 OID 0)
 -- Dependencies: 222
 -- Name: projects_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.projects_id_seq OWNED BY public.projects.id;
 
-
---
--- TOC entry 225 (class 1259 OID 16416)
--- Name: session; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.session (
-    sid character varying(36) NOT NULL,
-    sess json NOT NULL,
-    expired timestamp with time zone NOT NULL
-);
-
-
-ALTER TABLE public.session OWNER TO postgres;
 
 --
 -- TOC entry 223 (class 1259 OID 16409)
@@ -245,7 +231,7 @@ CREATE SEQUENCE public.users_id_seq
 ALTER SEQUENCE public.users_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3455 (class 0 OID 0)
+-- TOC entry 3449 (class 0 OID 0)
 -- Dependencies: 224
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -254,7 +240,7 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- TOC entry 3274 (class 2604 OID 16421)
+-- TOC entry 3270 (class 2604 OID 16421)
 -- Name: collections id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -262,7 +248,7 @@ ALTER TABLE ONLY public.collections ALTER COLUMN id SET DEFAULT nextval('public.
 
 
 --
--- TOC entry 3275 (class 2604 OID 16422)
+-- TOC entry 3271 (class 2604 OID 16422)
 -- Name: docs id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -270,7 +256,7 @@ ALTER TABLE ONLY public.docs ALTER COLUMN id SET DEFAULT nextval('public.docs_id
 
 
 --
--- TOC entry 3276 (class 2604 OID 16423)
+-- TOC entry 3272 (class 2604 OID 16423)
 -- Name: notes id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -278,7 +264,7 @@ ALTER TABLE ONLY public.notes ALTER COLUMN id SET DEFAULT nextval('public.notes_
 
 
 --
--- TOC entry 3277 (class 2604 OID 16424)
+-- TOC entry 3273 (class 2604 OID 16424)
 -- Name: projects id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -286,7 +272,7 @@ ALTER TABLE ONLY public.projects ALTER COLUMN id SET DEFAULT nextval('public.pro
 
 
 --
--- TOC entry 3278 (class 2604 OID 16425)
+-- TOC entry 3274 (class 2604 OID 16425)
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -294,7 +280,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- TOC entry 3282 (class 2606 OID 16427)
+-- TOC entry 3278 (class 2606 OID 16427)
 -- Name: collections collections_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -303,7 +289,7 @@ ALTER TABLE ONLY public.collections
 
 
 --
--- TOC entry 3284 (class 2606 OID 16429)
+-- TOC entry 3280 (class 2606 OID 16429)
 -- Name: docs docs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -312,7 +298,7 @@ ALTER TABLE ONLY public.docs
 
 
 --
--- TOC entry 3296 (class 2606 OID 16471)
+-- TOC entry 3290 (class 2606 OID 16471)
 -- Name: links links_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -321,7 +307,7 @@ ALTER TABLE ONLY public.links
 
 
 --
--- TOC entry 3286 (class 2606 OID 16431)
+-- TOC entry 3282 (class 2606 OID 16431)
 -- Name: notes notes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -330,7 +316,7 @@ ALTER TABLE ONLY public.notes
 
 
 --
--- TOC entry 3288 (class 2606 OID 16433)
+-- TOC entry 3284 (class 2606 OID 16433)
 -- Name: projects projects_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -339,16 +325,7 @@ ALTER TABLE ONLY public.projects
 
 
 --
--- TOC entry 3294 (class 2606 OID 16439)
--- Name: session session_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.session
-    ADD CONSTRAINT session_pkey PRIMARY KEY (sid);
-
-
---
--- TOC entry 3290 (class 2606 OID 16435)
+-- TOC entry 3286 (class 2606 OID 16435)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -357,7 +334,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3292 (class 2606 OID 16437)
+-- TOC entry 3288 (class 2606 OID 16437)
 -- Name: users users_username_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -366,7 +343,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3297 (class 2606 OID 16440)
+-- TOC entry 3291 (class 2606 OID 16440)
 -- Name: collections collections_proj_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -375,7 +352,7 @@ ALTER TABLE ONLY public.collections
 
 
 --
--- TOC entry 3298 (class 2606 OID 16445)
+-- TOC entry 3292 (class 2606 OID 16445)
 -- Name: docs docs_proj_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -384,7 +361,7 @@ ALTER TABLE ONLY public.docs
 
 
 --
--- TOC entry 3301 (class 2606 OID 16472)
+-- TOC entry 3295 (class 2606 OID 16472)
 -- Name: links links_docid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -393,16 +370,16 @@ ALTER TABLE ONLY public.links
 
 
 --
--- TOC entry 3302 (class 2606 OID 16477)
--- Name: links links_noteid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3296 (class 2606 OID 16482)
+-- Name: links links_projid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.links
-    ADD CONSTRAINT links_noteid_fkey FOREIGN KEY (noteid) REFERENCES public.notes(id);
+    ADD CONSTRAINT links_projid_fkey FOREIGN KEY (projid) REFERENCES public.projects(id);
 
 
 --
--- TOC entry 3299 (class 2606 OID 16450)
+-- TOC entry 3293 (class 2606 OID 16450)
 -- Name: notes notes_coll_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -411,7 +388,7 @@ ALTER TABLE ONLY public.notes
 
 
 --
--- TOC entry 3300 (class 2606 OID 16455)
+-- TOC entry 3294 (class 2606 OID 16455)
 -- Name: projects projects_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -419,7 +396,7 @@ ALTER TABLE ONLY public.projects
     ADD CONSTRAINT projects_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
--- Completed on 2024-04-09 12:43:40
+-- Completed on 2024-04-09 13:38:14
 
 --
 -- PostgreSQL database dump complete
