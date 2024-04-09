@@ -123,10 +123,18 @@ app.post('/signup', async (req, res) => {
   const { password2 } = req.body;
   // Check to make suer passwords match, if yes create account and go back to login, if not reset page and give error
   if (password === password2) {
-    await doSQL(
-      'Insert into users (username, password, email) values ($1, $2, $3)',
-      [username, password, email],
-    );
+    try {
+      await doSQL(
+        'Insert into users (username, password, email) values ($1, $2, $3)',
+        [username, password, email],
+      );
+    } catch (error) {
+      if (error.code === '23505') {
+        res.render('signup', { error: 'Account already exists' });
+        return;
+      }
+      console.error(error);
+    }
     req.session.message = 'Account Creation Successful';
     res.redirect('/login');
   } else {

@@ -25,6 +25,9 @@ services:
       POSTGRES_DB: creativewriting
     volumes:
       - ./DatabaseDevScript.sql:/docker-entrypoint-initdb.d/DatabaseDevScript.sql
+    # port forwarded for dev purposes to connect to outside of WSL
+    ports:
+      - '6000:5432'
     networks:
       - app-network
   converter:
