@@ -301,6 +301,28 @@ app.get('/notes/:projId', async (req, res) => {
   res.json(combined);
 });
 
+// Create Links API
+app.post('/document/link/create', sessionCheck, async (req, res) => {
+  const { includeNotes } = req.body;
+  const { linkNote } = req.body;
+});
+
+// Delete Link
+app.delete('/document/link/:UUID', sessionCheck, async (req, res) => {
+  res.send('hello from simple server :)');
+});
+
+// get Links for document API
+app.get('/document/link/:docID', sessionCheck, async (req, res) => {
+  const { includeNotes } = req.body;
+  const { linkNote } = req.body;
+});
+
+// View the shared page with or without notes
+app.get('/shared/view/:UUID', async (req, res) => {
+  res.send('hello from simple server :)');
+});
+
 // Update the values of a collection and its notes after editing
 app.post('/collection', sessionCheck, async (req, res) => {
   const { title } = req.body;
