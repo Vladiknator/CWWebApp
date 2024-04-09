@@ -4,6 +4,7 @@ import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import pg from 'pg';
 import cookieSession from 'cookie-session';
+import crypto from 'crypto'
 
 // Express middleware and constants set up
 const app = express();
@@ -15,11 +16,18 @@ const adminApiKey =
 
 /* Middleware to check for session ID, any route that should only be accessed by logged in users should 
 include this to check for an existing session. See home route for example of implementation */
-const sessionCheck = (req, res, next) => {
+const sessionCheck = async (req, res, next) => {
   if (!req.session.id) {
     res.redirect('/login');
   } else {
+	  const result = await doSQL('SELECT blocked FROM users WHERE id=$1',[req.session.id]);
+	  if(result.rows.length > 0 && result.rows[0].blocked){
+		req.session = null;
+    		res.render('login', { error: 'Your account is blocked. Please contact the administrator!' });
+	  }
+	  else{
     next();
+  }
   }
 };
 
@@ -85,12 +93,12 @@ app.get('/login', (req, res) => {
 app.post('/login', async (req, res) => {
   const { username } = req.body;
   const { password } = req.body;
+  const hashedpassword = crypto.createHash('sha256').update(password).digest('hex');
   const result = await doSQL(
     'select * from users where username = $1 and password = $2',
-    [username, password],
+    [username, hashedpassword],
   );
 
-  console.log(result.rows);
 
   // Check if the login information matches with stuff in the database, no = go back to login page, yes = send to home page and set session variables
   if (result.rows.length === 1 && !result.rows[0].blocked) {
@@ -119,9 +127,11 @@ app.post('/signup', async (req, res) => {
   const { password2 } = req.body;
   // Check to make suer passwords match, if yes create account and go back to login, if not reset page and give error
   if (password === password2) {
+	const hashedpassword = crypto.createHash('sha256').update(password).digest('hex');
+	console.log(`Username: ${username}, Password: ${hashedpassword}, email: ${email}`);
     await doSQL(
       'Insert into users (username, password, email) values ($1, $2, $3)',
-      [username, password, email],
+      [username, hashedpassword, email],
     );
     req.session.message = 'Account Creation Successful';
     res.redirect('/login');
