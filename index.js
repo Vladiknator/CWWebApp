@@ -153,22 +153,33 @@ app.post('/home', sessionCheck, async (req, res) => {
   res.redirect(`/project/${id}`);
 });
 
-/* Render the project page with info from the project corresponding to the ID provided in the URI
-If user does not own the project of corresponding ID then send them back to the home page */
 app.get('/project/:projId', sessionCheck, async (req, res) => {
   const { projId } = req.params;
-  const result = await doSQL(
-    'select * from projects where user_id = $1 and id = $2',
-    [req.session.id, projId],
-  );
-  if (result.rows.length === 0) {
+
+  // Fetch the project details including the title using the provided projId
+  const projectResult = await doSQL('SELECT * FROM projects WHERE id = $1', [
+    projId,
+  ]);
+
+  if (projectResult.rows.length === 0) {
+    // If the project is not found, redirect to the home page
     res.redirect('/home');
   } else {
-    const docs = await doSQL('select * from docs where proj_id = $1', [projId]);
-    const colls = await doSQL('select * from collections where proj_id = $1', [
+    // Fetch documents and collections associated with the project
+    const docs = await doSQL('SELECT * FROM docs WHERE proj_id = $1', [projId]);
+    const colls = await doSQL('SELECT * FROM collections WHERE proj_id = $1', [
       projId,
     ]);
-    res.render('project', { docs: docs.rows, colls: colls.rows });
+
+    // Extract the project title
+    const projectTitle = projectResult.rows[0].title;
+
+    // Render the project page with the project details
+    res.render('project', {
+      projectName: projectTitle, // Pass the project title
+      docs: docs.rows,
+      colls: colls.rows,
+    });
   }
 });
 
