@@ -323,30 +323,105 @@ This ends up with a link like domain/shared/view/UUID
 which even without an account when opened it will take the user to a page showing the document
 */
 
-// Need to change noteID in table to projID
-
 // Create Links API
-app.post('/document/link/create', sessionCheck, async (req, res) => {
+app.post('/document/link/create', async (req, res) => {
   const { includeNotes } = req.body;
   const { linkNote } = req.body;
   const { docId } = req.body;
   const { projId } = req.body;
+  let sqlRes;
+
+  try {
+    sqlRes = await doSQL(
+      'INSERT INTO public.links( link_note, docid, projid, include_notes) VALUES ($1, $2, $3, $4) RETURNING *;',
+      [linkNote, docId, projId, includeNotes],
+    );
+  } catch (error) {
+    res.json({ error: 'An error occured with creating a link' });
+    return;
+  }
+
+  res.json({ ...{ message: 'Created Link' }, ...sqlRes.rows[0] });
 });
 
-// Delete Link
-app.delete('/document/link/:UUID', sessionCheck, async (req, res) => {
-  res.send('hello from simple server :)');
+// Delete Link API
+app.delete('/document/link/:uuid', async (req, res) => {
+  const { uuid } = req.params;
+  let sqlRes;
+
+  try {
+    sqlRes = await doSQL(
+      'delete from links where uuid = $1 and projid in (select id from projects where user_id = $2)',
+      [uuid, req.session.id],
+    );
+  } catch (error) {
+    res.json({ error: 'An error occured with deleting a link' });
+    return;
+  }
+  if (sqlRes.rowCount === 0) {
+    res.json({ error: 'Link UUID does not exist' });
+    return;
+  }
+  res.json({ ...{ message: 'Deleted Link' }, ...sqlRes.rows[0] });
 });
 
-// get Links for document API
-app.get('/document/link/:docID', sessionCheck, async (req, res) => {
-  const { includeNotes } = req.body;
-  const { linkNote } = req.body;
+// Get all links for give document API
+app.get('/document/link/:docId', async (req, res) => {
+  const { docId } = req.params;
+  let sqlRes;
+  try {
+    sqlRes = await doSQL(
+      'select * from links where docid = $1 and projid in (select id from projects where user_id = $2)',
+      [docId, req.session.id],
+    );
+  } catch (error) {
+    res.json({ error: 'An error occured with retrieving links' });
+    return;
+  }
+  res.json(sqlRes.rows);
 });
 
 // View the shared page with or without notes
-app.get('/shared/view/:UUID', async (req, res) => {
-  res.send('hello from simple server :)');
+app.get('/shared/view/:uuid', async (req, res) => {
+  const { uuid } = req.params;
+  let sqlRes;
+  try {
+    sqlRes = await doSQL(
+      'select * from links l join docs d on l.docid = d.id where uuid = $1',
+      [uuid],
+    );
+  } catch (error) {
+    res.sendStatus(500);
+    return;
+  }
+
+  if (sqlRes.rowCount === 0) {
+    res.sendStatus(404);
+    return;
+  }
+
+  res.render('shared', { doc: sqlRes.rows[0] });
+});
+
+// Get collections for a shared page
+app.get('/shared/link/:uuid/:projId', async (req, res) => {
+  const { projId } = req.params;
+  const { uuid } = req.params;
+  const colls = await doSQL(
+    'select * from collections where proj_id = $1 and proj_id in (select projid from links where uuid = $2)',
+    [projId, uuid],
+  );
+  const notes = await doSQL(
+    'select n.id, n.title, n.color, alias, note, coll_id, proj_id  from notes n join collections c on n.coll_id = c.id where proj_id = $1 and proj_id in (select projid from links where uuid = $2)',
+    [projId, uuid],
+  );
+  // map notes to correct collection and return a JSON object
+  const combined = colls.rows.map((coll) => ({
+    ...coll,
+    notes: notes.rows.filter((entry) => entry.coll_id === coll.id),
+  }));
+
+  res.json(combined);
 });
 
 // Update the values of a collection and its notes after editing
