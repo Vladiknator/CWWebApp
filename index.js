@@ -365,7 +365,7 @@ app.delete('/document/link/:uuid', async (req, res) => {
   res.json({ ...{ message: 'Deleted Link' }, ...sqlRes.rows[0] });
 });
 
-// Get all links for give document API
+// Get all links for given document API
 app.get('/document/link/:docId', async (req, res) => {
   const { docId } = req.params;
   let sqlRes;
