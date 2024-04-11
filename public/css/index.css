@@ -1,299 +1,117 @@
+html {
+  height: 100%;
+}
+
 body {
-  font-family: Monaco, sans-serif;
-  margin: 0;
-  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin-top: 56px; 
 }
 
-header {
-  position: fixed; 
-  left: 0;
-  top: 0;
-  height: 9%;
-  width: 100%; 
-  text-align: right;
-  background-color: #8bdfca;
-  padding: 25px 1px;
+main {
+  flex: 1;
 }
 
-nav ul {
-  list-style-type: none;
-  padding: 0;
+.navbar-custom, .footer-custom {
+  background-color: #7FE2B2 !important;
+  color: white !important;
+  transition: background-color 0.5s; /* Smooth transition for background color */
 }
 
-.nav {
-  background-color: #8bdfca; 
-  list-style-type: none;
-  text-align: center;
-  margin: 0;
-  padding: 3px;
+.navbar-custom .navbar-brand, 
+.navbar-custom .nav-link, 
+.footer-custom a {
+  color: white !important;
+  transition: background-color 0.5s; /* Smooth transition for background color */
 }
 
-nav ul li {
-  display: inline;
-  margin-right: 20px;
-}
 
-nav ul li a {
+
+  /* Dark mode styles */
+  body.dark-mode {
+    background-color: #121212;
+    color: #fff;
+  }
+
+  body.dark-mode .navbar-custom,
+  body.dark-mode .footer-custom {
+    background-color: #801d4d !important;
+    color: white !important;
+  }
+  
+  body.dark-mode .navbar-custom .navbar-brand,
+  body.dark-mode .navbar-custom .nav-link,
+  body.dark-mode .footer-custom a {
+    color: white !important;
+  }
+  .navbar-brand.dark-mode,
+  .nav-link.dark-mode {
+    color: #fff !important;
+  }
+
+  /* Dark mode button styles */
+#darkModeToggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background-color: #7fe2b2;
+  border: none;
+  border-radius: 50%;
   color: #fff;
-  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  z-index: 999; /* not entirely needed! just, to make sure. */
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5); /* box shadow added to button makes it look a lot better, thankfully. */
 }
 
-section {
-  padding: 50px;
+#darkModeToggle.dark-mode {
+  background-color: #801d4d;
+}
+
+html[style="display: none;"] {
+  display: block;
+  visibility: hidden;
+}
+
+html.dark-mode[style="display: none;"],
+html:not(.dark-mode) body {
+  visibility: visible;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.5s; /* Smooth transition for background color */
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 footer {
-  background-color: #8bdfca;
-  color: #000000;
-  text-align: center;
-  padding: 20px;
-  position: absolute;
-  bottom: 0;
+  background-color: #f8f9fa; /* Add background color */
+  flex-shrink: 0; /* Prevent footer from shrinking */
   width: 100%;
-}
-
-.fade-in-text {
-  font-family: Arial;
-  font-size: 50px;
-  animation: fadeIn 5s;
-}
-
-@keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-
-/* Dark Mode code*/
-
-body.dark-mode {
-  background-color: #333;
-  color: #fff;
-}
-
-.dark-mode .yellow{
-  color:#fff;
-  background-color: #444;
-
-}
-.dark-mode .navbar-light .navbar-nav .nav-link {
-  color: #fff;
-  background-color: #333
-}
-
-.dark-mode .navbar-light {
-  background-color: #222;
-}
-
-.dark-mode header {
-  background-color: #222;
-  color: #fff;
-}
-
-.dark-mode .btn .btn-outline-dark{
-  color:#333;
-  background-color: #fff
-}
-
-.dark-mode .footer {
-  background-color: #222;
-  color: #fff;
-}
-
-.dark-mode h1, .dark-mode h2 {
-  color: #fff;
-}
-
- /* Style for the "Dark Mode" button */
-.dark-mode .btn-light-mode {
-background-color: #fff;
-color: #000;
-transition: box-shadow 0.3s;
-      
-}
-
-/* Glow effect on hover */
-.dark-mode .btn-light-mode:hover {
-box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.5);
-      
-}
-
-body {
-  margin-top: 100px;
-}
-
-nav {
-  position: fixed; 
-  left: 0;
-  top: 0;
-  height: 3%;
-  width: 100%; 
-  text-align: right;
-  background-color: #8bdfca;
-  padding: 10px 0;
-}
-
-
-.dark-mode .header{
-  background-color: #453863;
-  color:aliceblue
-}
-
-title p {
-text-align: left;
-}
-
-footer {
-  position: fixed; 
-  left: 0;
-  bottom: 0;
-  height: 3%;
-  width: 100%; 
   text-align: center;
-  background-color: #8bdfca;
-  padding: 10px 0;
 }
 
-h1 {
+body, html {
   margin: 0;
   padding: 0;
 }
 
-/* CSS */
-.button-3 {
-  appearance: none;
-  background-color: #453863;
-  border: 1px solid rgba(27, 31, 35, .15);
-  border-radius: 6px;
-  box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
-  box-sizing: border-box;
-  color: #fff;
-  cursor: pointer;
-  display: inline-block;
-  font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 20px;
-  padding: 6px 16px;
-  position: relative;
-  text-align: center;
-  text-decoration: none;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  vertical-align: middle;
-  white-space: nowrap;
-}
 
-.button-3:focus:not(:focus-visible):not(.focus-visible) {
-  box-shadow: none;
-  outline: none;
-}
-
-.button-3:hover {
-  background-color: #56467a;
-}
-
-.button-3:focus {
-  box-shadow: #6a5696 0 0 0 3px;
-  outline: none;
-}
-
-.button-3:disabled {
-  background-color: #6a5696;
-  border-color: rgba(27, 31, 35, .1);
-  color: rgba(255, 255, 255, .8);
-  cursor: default;
-}
-
-.button-3:active {
-  background-color: #6a5696;
-  box-shadow: rgba(20, 70, 32, .2) 0 1px 0 inset;
-}
-
-h1 {
-  color: rgb(0, 0, 0);
-  font-size: 3rem;
-  text-align: center;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-}
-
-h2 {
-  color: rgb(0, 0, 0);
-  font-size: 2rem;
-  text-align: center;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-}
-
-section {
-  height: 200vh;
-}
-
-.tag {
-  opacity: 0;
-  transform: translate(0, 10vh);
-  transition: all 1s;
-}
-
-.tag.visible {
-  opacity: 1;
-  transform: translate(0, 0);
-}
-
-.yellow {
-  background-color: lightyellow;
-}
-.red {
-  background-color: lightcoral;
-}
-.blue {
-  background-color: lightblue;
-}
-.green {
-  background-color: lightgreen;
-}
-
-
-
-.wrapper {
-  height: 100vh;
-  /*This part is important for centering*/
-  display: grid;
-  place-items: center;
-}
-
-.typing-demo {
-  width: 7ch;
-  animation: typing 2s steps(7), blink .5s step-end infinite alternate;
-  white-space: nowrap;
-  overflow: hidden;
-  border-right: 3px solid;
-  font-family: monospace;
-  font-size: 6em;
-}
-
-@keyframes typing {
-  from {
-    width: 0
-  }
-}
-    
-@keyframes blink {
-  50% {
-    border-color: transparent
-  }
-}
-
-.parallax {
-  /* The image used */
-  background-image: url("https://media.istockphoto.com/id/1235240586/photo/library-bookshelves-with-books-and-textbooks-learning-and-education-concept.jpg?s=612x612&w=0&k=20&c=nVkVTIfKb1a6fvucYzcI7ug8S74tcJ5lH3eZJ0qvaRw=");
-
-  /* Set a specific height */
-  min-height: 500px;
-
-  /* Create the parallax scrolling effect */
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
+    /* Class to hide body during page load */
+    .hide-body {
+      visibility: hidden;
+    }
