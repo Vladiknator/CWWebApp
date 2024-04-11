@@ -1,66 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Writle</title>
-    <!-- Bootstrap, CSS and JS go here. -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/public/css/index.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>src="/javascript/index.js"</script>
-    <style>
-    </style>
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-light">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/signup" target="_blank">Sign up</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/login" target="_blank">Login</a>
-                </li>
-            </ul>
-            <!--Dark mode button-->
-            <button class="btn btn-outline-dark btn-light-mode" id="darkModeToggle">Dark Mode</button>
-        </nav>
-    </header>
-    <div class="container">
-      <!--Fancy CSS animation-->
-        <div class="typing-demo">
-            Writle.
-        </div>
-    </div>
-    <div class="parallax"></div>
-    <div class="container text-center">
-        <section class="yellow">
-            <h1>Welcome to Writle, the nexus of creativity and organization for writers and visionaries.</h1>
-            <h2>Here, we transform the chaos of creative thoughts into a coherent tapestry of ideas. Writle is more than just a writing app; it's a digital sanctuary for your narratives, notes, and notions. Our platform addresses the quintessential challenge of managing scattered notes by seamlessly integrating them into your writing process. Imagine an environment where characters, locations, and plot elements are effortlessly woven into your stories through intuitive cross-referencing. With Writle, your workspace is customizable, ensuring a uniquely tailored experience that caters to your creative workflow. Whether you're a novelist, a student, or a content creator, Writle is designed to streamline your writing journey, making it as boundless as your imagination.</h2>
-        </section>
-    </div>
-    <footer class="footer mt-auto py-3">
-        <div class="container text-center">
-            Copyright © 2024, Writle. All rights reserved
-        </div>
-    </footer>
-    <script>
-      // JavaScript for toggling dark mode and updating button text, still need to find out why this breaks whenever i put it into index.js
-      const darkModeButton = document.getElementById('darkModeToggle');
 
-      darkModeButton.addEventListener('click', function () {
-          document.body.classList.toggle('dark-mode');
-          if (document.body.classList.contains('dark-mode')) {
-              darkModeButton.textContent = 'Light Mode';
-              darkModeButton.classList.remove('btn-outline-dark');
-              darkModeButton.classList.add('btn-dark');
-          } else {
-              darkModeButton.textContent = 'Dark Mode';
-              darkModeButton.classList.remove('btn-dark');
-              darkModeButton.classList.add('btn-outline-dark');
-          }
-      });
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <title>Writle</title>
+  <link rel="stylesheet" href="zenzen.css">
+  <link rel="preload" href="https://imgur.com/qU3gY1q.png" as="image">
+  <link rel="preload" href="https://imgur.com/lUBrBwg.png" as="image">
+</head>
+
+<body class="hide-body" style="visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top navbar-custom">
+    <a class="navbar-brand" href="/">Writle</a>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/about">About</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/signup">Sign up</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/login">Login</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <main style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+    <h1 style="text-align: center; font-size: 300%;">Writle</h1>
+    <div style="text-align: center;">
+      <h1 style="text-align: center; font-size: 100%;">Your story writing companion</h1>
+    </div>
+  
+    <div style="text-align: center;">
+      <img src="https://c.tenor.com/S1cs1vBgWuQAAAAj/cute-adorable.gif" alt="Writing Buddy" style="max-width: 100%; height: auto;">
+    </div>
+  </main>
+  
+  
+
+  <footer class="py-5 mt-5 footer-custom" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+    <div class="container text-light text-center">
+      <p class="display-t mb-3">Writle</p>
+      <small class="text-white-50">&copy; Copyright © 2024, Writle. All rights reserved.</small>
+      <small class="text-white-50" href="https://icons8.com/">Icons by Icons8</small>
+    </div>
+  </footer>
+
+  <!--Fixing this entire thing, to make sure a button did not look weird when you refresh the page, a thing that nobody would care about, took like. 25 minutes. It works though!-->
+  <button id="darkModeToggle" class="btn" style="background-color: #7fe2b2; position: fixed; bottom: 20px; right: 20px; display: none;">
+    <!--Preload blank image to prevent alt text from appearing. :)-->
+    <img id="darkModeIcon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Moon and Stars" style="width: 50px; height: 50px; position: fixed; bottom: 20px; right: 20px; display: none;">
+  </button>
+  
+  
+  
+
+  
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+  <!-- I should probably move this over to a different javascript file altogether but, for now it's fine.-->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const body = document.body;
+      const darkModeToggle = document.getElementById('darkModeToggle');
+      const darkModeIcon = document.getElementById('darkModeIcon');
+    
+      // Function to toggle dark mode
+      function toggleDarkMode() {
+        const isDarkMode = !body.classList.contains('dark-mode');
+    
+        // Update button color and icon based on dark mode state
+        if (isDarkMode) {
+          // Sun icon
+          darkModeToggle.style.backgroundColor = '#801d4d';
+          darkModeIcon.src = 'https://imgur.com/qU3gY1q.png';
+        } else {
+          // Moon icon
+          darkModeToggle.style.backgroundColor = '#7fe2b2';
+          darkModeIcon.src = 'https://imgur.com/lUBrBwg.png';
+        }
+    
+        // Toggle dark mode class on body
+        body.classList.toggle('dark-mode', isDarkMode);
+    
+        // Update dark mode state in localStorage
+        try {
+          localStorage.setItem('darkMode', isDarkMode ? 'true' : 'false');
+        } catch (e) {
+          console.error('Error setting dark mode state in localStorage:', e);
+        }
+      }
+    
+      // Retrieve dark mode state from localStorage
+      let isDarkMode = localStorage.getItem('darkMode') === 'true';
+    
+      // Set initial dark mode state
+      if (isDarkMode) {
+        applyDarkMode();
+      } else {
+        applyLightMode();
+      }
+    
+      // Function to apply dark mode
+      function applyDarkMode() {
+        body.classList.add('dark-mode');
+        darkModeToggle.style.backgroundColor = '#801d4d'; // Set button background color for dark mode
+        darkModeToggle.style.display = 'block'; // Make button visible once dark mode state is applied
+        darkModeIcon.style.display = 'block'; // Make icon visible once dark mode state is applied
+        darkModeIcon.src = 'https://imgur.com/qU3gY1q.png'; // Set icon source for dark mode
+        darkModeToggle.style.backgroundColor = '#801d4d'; // Set button background color for dark mode
+        body.style.visibility = 'visible'; // Make body visible
+      }
+    
+      // Function to apply light mode
+      function applyLightMode() {
+        body.classList.remove('dark-mode');
+        darkModeToggle.style.backgroundColor = '#7fe2b2'; // Set button background color for light mode
+        darkModeToggle.style.display = 'block'; // Make button visible once light mode state is applied
+        darkModeIcon.style.display = 'block'; // Make icon visible once light mode state is applied
+        darkModeIcon.src = 'https://imgur.com/lUBrBwg.png'; // Set icon source for light mode
+        darkModeToggle.style.backgroundColor = '#7fe2b2'; // Set button background color for light mode
+        body.style.visibility = 'visible'; // Make body visible
+      }
+    
+      // Add event listener for dark mode toggle button
+      darkModeToggle.addEventListener('click', toggleDarkMode);
+    
+      // Remove hide-body class to show body after page load
+      document.body.classList.remove('hide-body');
+    });
+    
   </script>
 </body>
+
 </html>
