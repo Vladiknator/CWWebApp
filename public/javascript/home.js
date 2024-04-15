@@ -9,3 +9,9 @@ function showExistingForm() {
   document.getElementById('existingForm').style.display = 'block';
   document.getElementById('createForm').style.display = 'none';
 }
+
+function showDefaultContent() {
+  document.getElementById('defaultContent').style.display = 'block';
+  document.getElementById('createForm').style.display = 'none';
+  document.getElementById('existingForm').style.display = 'none';
+}

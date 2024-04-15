@@ -1,0 +1,66 @@
+body {
+  padding-top: 56px;
+}
+
+.item {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+  width: 150px;
+  height: 100px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
+}
+
+.item button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: center;
+}
+
+.add-new {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  border-style: dashed;
+}
+
+.container h2 {
+  width: 100%;
+}
+
+.container {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.container .item-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.doc-dropdown, .coll-dropdown {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.item {
+  position: relative;
+}
+
+.navbar-custom, .footer-custom {
+  background-color: #7FE2B2 !important;
+  color: white !important;
+}
+
+.navbar-custom .navbar-brand, 
+.navbar-custom .nav-link, 
+.footer-custom a {
+  color: white !important;
+}

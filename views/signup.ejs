@@ -4,23 +4,58 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <title>Sign Up</title>
-  <link rel="stylesheet" href="mrowww.css">
+  <link rel="stylesheet" href="/public/css/signup.css">
 </head>
 
-<body style=background-color:#1c87c9;>
-  <h3>Sign Up</h3>
-  <form action="/signup" method="post" autocomplete="off">
-    <input type="text" name="username" id="username" placeholder="Username" />
-    <br />
-    <input type="email" name="email" id="email" placeholder="Email" /> <br />
-    <input type="password" name="password" id="password" placeholder="Password" />
-    <br />
-    <input type="password" name="password2" id="password2" placeholder="Confirm Password" />
-    <br />
-    <button class="button-3" role="button" input type="submit" value="Submit">Submit</button>
-  </form>
-  <p><%= locals.error ? error : '' %></p>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top navbar-custom">
+    <a class="navbar-brand" href="/">Writle</a>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/about">About</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/signup">Sign up</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/login">Login</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="content-box" id="defaultContent">
+    <h1>Sign Up</h1>
+    <form action="/signup" method="post" autocomplete="off">
+      <input type="text" name="username" required id="username" placeholder="Username" />
+      <br />
+      <input type="email" name="email" required id="email" placeholder="Email" /> <br />
+      <input type="password" name="password" required id="password" placeholder="Password" />
+      <br />
+      <input type="password" name="password2" required id="password2" placeholder="Confirm Password" />
+      <br />
+      <input type="submit" value="Submit" />
+    </form>
+    <p><%= locals.error ? error : '' %></p>
+  </div>
+
+  <div class="spacer" style="height: 50vh;"></div>
+
+  <footer class="py-5 mt-5 footer-custom">
+    <div class="container text-light text-center">
+      <p class="display-t mb-3">Writle</p>
+      <small class="text-white-50">&copy; Copyright © 2024, Writle. All rights reserved.</small>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 
 </html>
