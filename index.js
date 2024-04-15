@@ -4,6 +4,7 @@ import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import pg from 'pg';
 import cookieSession from 'cookie-session';
+import crypto from 'node:crypto';
 
 // Express middleware and constants set up
 const app = express();
