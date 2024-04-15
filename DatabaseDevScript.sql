@@ -210,6 +210,7 @@ CREATE TABLE public.users (
     email text,
     blocked boolean DEFAULT false
 );
+ALTER TABLE public.users ALTER COLUMN password TYPE char(64);
 
 
 ALTER TABLE public.users OWNER TO postgres;
