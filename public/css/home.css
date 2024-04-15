@@ -1,0 +1,47 @@
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  padding-top: 56px;
+}
+
+#page-container {
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.content-box {
+  width: 50%;
+  padding: 20px;
+  margin: 2rem auto 4rem;
+  border: 1px solid #000;
+  text-align: center;
+  background-color: #fff;
+  flex: 1;
+}
+
+footer {
+  text-align: center;
+  background-color: #7FE2B2;
+  color: white;
+  padding: 1rem 0;
+  flex-shrink: 0;
+}
+
+.navbar-custom, .footer-custom {
+  background-color: #7FE2B2 !important;
+  color: white !important;
+}
+
+.navbar-custom .navbar-brand, 
+.navbar-custom .nav-link, 
+.footer-custom a {
+  color: white !important;
+}
