@@ -3,120 +3,20 @@ let collIndex = 0;
 let editors;
 let matchingArray;
 const projId = document.getElementById('proj-id').value;
-const docId = document.getElementById('doc-id').value;
-const docTitle = document.getElementById('title').value;
-
-function download(id, format) {
-  fetch(`/downloadDoc/${id}/${format}`)
-    .then((response) => response.blob())
-    .then((blob) => {
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${docTitle}.${format}`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    });
-}
+const uuid = window.location.pathname.split('/').filter(Boolean).at(-1);
 
 const tinyMCEConfig = {
   selector: 'textarea#document',
   promotion: false,
-  icons_url: 'public/icons/writle-custom-icons/icons.js',
-  icons: 'writle-custom-icons',
-  plugins:
-    'preview importcss searchreplace autolink save directionality code visualblocks visualchars fullscreen link codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons accordion',
-  menubar: 'file edit view insert format tools table help',
-  toolbar:
-    'save submit export notes share | undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | table | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | save print | pagebreak anchor codesample | ltr rtl',
+  readonly: true,
+  menubar: false,
+  toolbar: false,
+  plugins: 'preview code fullscreen wordcount help',
   importcss_append: true,
-  save_onsavecallback: () => {
-    submitForm(false);
-  },
-  setup: (editor) => {
-    editor.ui.registry.addMenuButton('export', {
-      text: 'Export',
-      fetch: (callback) => {
-        const items = [
-          {
-            type: 'menuitem',
-            text: 'Export Docx',
-            icon: 'export-docx',
-            onAction: () => {
-              editor.save();
-              download(docId, 'docx');
-            },
-          },
-          {
-            type: 'menuitem',
-            text: 'Export PDF',
-            icon: 'export-pdf',
-            onAction: () => {
-              editor.save();
-              download(docId, 'pdf');
-            },
-          },
-        ];
-        callback(items);
-      },
-    });
-
-    editor.ui.registry.addMenuButton('notes', {
-      text: 'Notes',
-      fetch: (callback) => {
-        const items = [
-          {
-            type: 'menuitem',
-            text: 'Reload Highlights',
-            onAction: () => {
-              highlightAliases(editor);
-              editor.save();
-            },
-          },
-          {
-            type: 'menuitem',
-            text: 'Remove Highlights',
-            onAction: () => {
-              removeHighlights();
-              editor.save();
-            },
-          },
-        ];
-        callback(items);
-      },
-    });
-
-    editor.ui.registry.addButton('submit', {
-      icon: 'submit',
-      text: 'Submit',
-      tooltip: 'Submit Document Changes',
-      onAction: () => {
-        const submitButton = document.getElementById('doc-submit');
-        submitButton.click();
-      },
-    });
-
-    editor.ui.registry.addButton('share', {
-      icon: 'share',
-      tooltip: 'Share Document',
-      onAction: () => {
-        // ToDo: Add share functionality
-        // eslint-disable-next-line no-undef
-        const myModal = new bootstrap.Modal(
-          document.getElementById('share-modal'),
-        );
-        myModal.show();
-      },
-    });
-  },
   height: '80vh',
   resize: false,
-  quickbars_selection_toolbar:
-    'bold italic | quicklink h2 h3 blockquote quicktable',
   noneditable_class: 'mceNonEditable',
   toolbar_mode: 'sliding',
-  contextmenu: 'link table',
   skin: 'oxide',
   content_css: 'default',
   content_style:
@@ -127,26 +27,15 @@ const tinyMCEConfig = {
 async function loadApp() {
   // eslint-disable-next-line no-undef
   editors = await tinymce.init(tinyMCEConfig);
-  getNotesData();
 
-  // Bind collections traversal buttons
-  const nextButton = document.getElementById('next-collection');
-  nextButton.addEventListener('click', nextCollection);
-  const prevButton = document.getElementById('prev-collection');
-  prevButton.addEventListener('click', prevCollection);
-
-  // Bind Submit override to form
-  document.getElementById('editor-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    submitForm(true);
-  });
-
-  // Autosave the form once a minuite without redirecting if the editor has been modified since last save
-  setInterval(() => {
-    if (editors[0].isDirty()) {
-      submitForm(false);
-    }
-  }, 60000);
+  if (document.getElementById('current-collection') != null) {
+    getNotesData();
+    // Bind collections traversal buttons
+    const nextButton = document.getElementById('next-collection');
+    const prevButton = document.getElementById('prev-collection');
+    nextButton.addEventListener('click', nextCollection);
+    prevButton.addEventListener('click', prevCollection);
+  }
 }
 
 // Load the app
@@ -155,7 +44,7 @@ loadApp();
 /* Retrieve collections from server and load collcection 1 into collections tab,
 create matching array from aliases and highlight editor */
 async function getNotesData() {
-  const noteRawData = await fetch(`notes/${projId}`);
+  const noteRawData = await fetch(`/shared/link/${uuid}/${projId}`);
   noteJSON = await noteRawData.json();
   loadCollection(0);
   matchingArray = createMatchingArray(noteJSON);
@@ -397,40 +286,6 @@ function removeHighlights() {
         .textContent.replace(/\u200B/g, '');
     }
   } while (walker.next());
-}
-
-// Handle editor form posting
-function submitForm(redirectOnResponse) {
-  removeHighlights();
-  // eslint-disable-next-line no-undef
-  tinymce.get('document').save();
-  const formData = new URLSearchParams(
-    new FormData(document.getElementById('editor-form')),
-  );
-  highlightAliases(editors[0]);
-
-  fetch('/document', {
-    method: 'POST',
-    body: formData,
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      if (redirectOnResponse && response.redirected) {
-        window.location.href = response.url;
-      } else {
-        return response.text();
-      }
-    })
-    .then((data) => {
-      if (data) {
-        console.log('Autosave Successful');
-      }
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
 }
 
 // Calculate if white or black has better contrast
