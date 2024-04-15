@@ -14,12 +14,12 @@
   <script src="/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
   <h1>Note Collection</h1>
 
-  <form action="/collection" method="post">
+  <form id="collection-form">
     <label for="title">Collection Title:</label>
     <input id="title" name="title" type="text" value="<%= coll[0].ctitle %>"> <br>
     <input type="hidden" name="collID" value="<%= coll[0].cid %>">
     <h3>Entries:</h3>
-    <div id="entryContainer">
+    <div id="entry-container">
       <% let counter = 1%>
       <% coll.forEach ( (e) => {  %>
       <div class="entry" id="entry<%= counter %>">

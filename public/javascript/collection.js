@@ -19,9 +19,18 @@ const noteConfig = {
 // eslint-disable-next-line no-undef
 tinymce.init(noteConfig);
 
+// Bind form to even listener
+document.getElementById('collection-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  submitForm(true);
+});
+
+// Autosave the form once a minuite without redirecting
+setInterval(() => submitForm(false), 60000);
+
 // Function to create a new entry on the web page when new entry button is pressed
 function newEntry() {
-  const container = document.getElementById('entryContainer');
+  const container = document.getElementById('entry-container');
   const entries = container.getElementsByClassName('entry');
   const lastEntry = entries[entries.length - 1];
   let count;
@@ -79,7 +88,7 @@ function newEntry() {
       input.type = 'hidden';
       td2.appendChild(input);
       const picker = document.createElement('hex-color-picker');
-      picker.color = '#FFFFFF';
+      picker.color = hslToHex(getRandomIntInclusive(0, 360), 100, 50);
       picker.style = 'height: 6rem;';
       picker.id = `colorPicker${count}`;
       picker.addEventListener('color-changed', (event) => {
@@ -108,8 +117,9 @@ function newEntry() {
 }
 
 // Function to delete entry
-// eslint-disable-next-line no-unused-vars
 function deleteEntry(i) {
+  // eslint-disable-next-line no-undef
+  tinymce.get(`notes${i}`).remove();
   const entry = document.getElementById(`entry${i}`);
   entry.remove();
 }
@@ -127,4 +137,61 @@ function loadColorPickers() {
       colorInput.value = newColor;
     });
   });
+}
+
+// Handle editor form posting
+function submitForm(redirectOnResponse) {
+  // eslint-disable-next-line no-undef
+  const editors = tinymce.get();
+  console.log(editors);
+  editors.forEach((editor) => {
+    editor.save();
+  });
+  const formData = new URLSearchParams(
+    new FormData(document.getElementById('collection-form')),
+  );
+
+  fetch('/collection', {
+    method: 'POST',
+    body: formData,
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      if (redirectOnResponse && response.redirected) {
+        window.location.href = response.url;
+      } else {
+        return response.text();
+      }
+    })
+    .then((data) => {
+      if (data) {
+        console.log('Autosave Successful');
+      }
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+}
+
+// Convert HSL values to hex
+function hslToHex(h, s, l) {
+  const lDiv = l / 100;
+  const a = (s * Math.min(lDiv, 1 - lDiv)) / 100;
+  const f = (n) => {
+    const k = (n + h / 30) % 12;
+    const color = lDiv - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color)
+      .toString(16)
+      .padStart(2, '0'); // convert to Hex and prefix "0" if needed
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
+}
+
+// get random int inclusive of both end values
+function getRandomIntInclusive(min, max) {
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled); // The maximum is inclusive and the minimum is inclusive
 }
