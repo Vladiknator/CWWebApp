@@ -121,7 +121,7 @@ app.post('/signup', async (req, res) => {
   const { password } = req.body;
   const { email } = req.body;
   const { password2 } = req.body;
-  // Check to make suer passwords match, if yes create account and go back to login, if not reset page and give error
+  // Check to make sure passwords match, if yes create account and go back to login, if not reset page and give error
   if (password === password2) {
     try {
       await doSQL(
@@ -165,23 +165,44 @@ app.post('/home', sessionCheck, async (req, res) => {
   res.redirect(`/project/${id}`);
 });
 
-/* Render the project page with info from the project corresponding to the ID provided in the URI
-If user does not own the project of corresponding ID then send them back to the home page */
 app.get('/project/:projId', sessionCheck, async (req, res) => {
   const { projId } = req.params;
-  const result = await doSQL(
-    'select * from projects where user_id = $1 and id = $2',
-    [req.session.id, projId],
-  );
-  if (result.rows.length === 0) {
+
+  // Fetch the project details including the title using the provided projId
+  const projectResult = await doSQL('SELECT * FROM projects WHERE id = $1', [
+    projId,
+  ]);
+
+  if (projectResult.rows.length === 0) {
+    // If the project is not found, redirect to the home page
     res.redirect('/home');
   } else {
-    const docs = await doSQL('select * from docs where proj_id = $1', [projId]);
-    const colls = await doSQL('select * from collections where proj_id = $1', [
+    // Fetch documents and collections associated with the project
+    const docs = await doSQL('SELECT * FROM docs WHERE proj_id = $1', [projId]);
+    const colls = await doSQL('SELECT * FROM collections WHERE proj_id = $1', [
       projId,
     ]);
-    res.render('project', { docs: docs.rows, colls: colls.rows });
+
+    // Extract the project title
+    const projectTitle = projectResult.rows[0].title;
+
+    // Render the project page with the project details
+    res.render('project', {
+      projectName: projectTitle, // Pass the project title
+      docs: docs.rows,
+      colls: colls.rows,
+    });
   }
+});
+
+// Render profile page
+app.get('/profile', sessionCheck, (req, res) => {
+  res.render('profile', { user: req.session.username });
+});
+
+// Render about page
+app.get('/about', sessionCheck, (req, res) => {
+  res.render('about', { user: req.session.username });
 });
 
 // Open a selected document
@@ -244,6 +265,36 @@ app.post('/deleteDocument', sessionCheck, async (req, res) => {
   } catch (error) {
     console.error('Error deleting document:', error);
     res.status(500).send('Failed to delete document');
+  }
+});
+
+// Route for renaming a document
+app.post('/renameDocument', sessionCheck, async (req, res) => {
+  const { documentId, newTitle } = req.body;
+  try {
+    await doSQL('UPDATE docs SET title = $1 WHERE id = $2', [
+      newTitle,
+      documentId,
+    ]);
+    res.redirect(`/project/${req.session.currentProj}`);
+  } catch (error) {
+    console.error('Error updating document title:', error);
+    res.status(500).send('Failed to update document title');
+  }
+});
+
+// Route for renaming a collection
+app.post('/renameCollection', sessionCheck, async (req, res) => {
+  const { collectionId, newTitle } = req.body;
+  try {
+    await doSQL('UPDATE collections SET title = $1 WHERE id = $2', [
+      newTitle,
+      collectionId,
+    ]);
+    res.redirect(`/project/${req.session.currentProj}`);
+  } catch (error) {
+    console.error('Error updating collection title:', error);
+    res.status(500).send('Failed to update collection title');
   }
 });
 
