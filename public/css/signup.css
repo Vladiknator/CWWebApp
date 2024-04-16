@@ -1,37 +1,31 @@
-body, html {
+body,
+html {
+  height: 100vh;
   margin: 0;
   padding: 0;
-}
-
-body {
-  padding-top: 56px; 
+  display: flex;
+  flex-direction: column;
 }
 
 .content-box {
-  width: 50%;
-  padding: 20px;
-  border: 1px solid #000;
-  text-align: center;
+  flex-grow: 1;
   margin: 2rem auto;
   background-color: #fff;
 }
 
-footer {
-  margin-top: auto; 
+.dialog-box {
+  padding: 20px;
+  border: rgb(238, 238, 238) 2px solid;
+  border-radius: 0.8em;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+.btn {
+  color: #ffffff !important;
+  background: #61e6a6 !important;
+  font-weight: bolder !important;
+  width: 100%;
 }
 
-.navbar-custom, .footer-custom {
-  background-color: #7FE2B2 !important;
-  color: white !important;
-}
-
-.navbar-custom .navbar-brand, 
-.navbar-custom .nav-link, 
-.footer-custom a {
-  color: white !important;
+.btn:hover {
+  background: #6effb9 !important;
 }

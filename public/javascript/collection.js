@@ -105,6 +105,7 @@ function newEntry() {
   const deleteButton = document.createElement('button');
   deleteButton.textContent = 'Delete Entry';
   deleteButton.onclick = () => deleteEntry(count); // Call deleteEntry() with the entry index
+  deleteButton.classList.add('btn', 'mt-1');
   entryDiv.appendChild(deleteButton);
 
   container.appendChild(entryDiv);

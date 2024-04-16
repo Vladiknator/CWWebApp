@@ -211,6 +211,7 @@ app.get('/project/:projId', sessionCheck, async (req, res) => {
       projectName: projectTitle, // Pass the project title
       docs: docs.rows,
       colls: colls.rows,
+      user: req.session.username,
     });
   }
 });
@@ -241,7 +242,7 @@ app.post('/selectcollection', sessionCheck, async (req, res) => {
 	    where c.id=$1;`,
     [id],
   );
-  res.render('collection', { coll: coll.rows });
+  res.render('collection', { user: req.session.username, coll: coll.rows });
 });
 
 // Create a new project
@@ -280,7 +281,7 @@ app.post('/createdocs', sessionCheck, async (req, res) => {
 app.post('/deleteDocument', sessionCheck, async (req, res) => {
   const { documentId } = req.body;
   try {
-    await doSQL('DELETE FROM docs WHERE id = $1', [documentId]);
+    await doSQL('DELETE FROM docs WHERE id = $1 cascade', [documentId]);
     res.redirect(`/project/${req.session.currentProj}`);
   } catch (error) {
     console.error('Error deleting document:', error);
@@ -332,7 +333,9 @@ app.post('/createcollection', sessionCheck, async (req, res) => {
 app.post('/deleteCollection', sessionCheck, async (req, res) => {
   const { collectionId } = req.body;
   try {
-    await doSQL('DELETE FROM collections WHERE id = $1', [collectionId]);
+    await doSQL('DELETE FROM collections WHERE id = $1 cascade', [
+      collectionId,
+    ]);
     res.redirect(`/project/${req.session.currentProj}`);
   } catch (error) {
     console.error('Error deleting collection:', error);

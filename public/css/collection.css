@@ -17,6 +17,31 @@
 
 .entry {
   margin: 3rem;
-  background-color: lightgray;
+  background-color: rgb(255, 253, 251);
+  border-color: rgb(255, 240, 226);
+  border-width: 2px;
+  border-style: solid;
   padding: 1.5rem;
+  border-radius: 0.8rem;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#collection-form {
+  flex-grow: 1;
+}
+
+.btn {
+  color: #ffffff !important;
+  background: #61e6a6 !important;
+  font-weight: bolder !important;
+  width: 100%;
+}
+
+.btn:hover {
+  background: #6effb9 !important;
 }

@@ -1,47 +1,59 @@
-body, html {
-  height: 100%;
+body,
+html {
+  height: 100vh;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
 }
 
-body {
-  padding-top: 56px;
-}
-
 #page-container {
-  flex: 1; 
+  flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 100%;
 }
 
 .content-box {
-  width: 50%;
-  padding: 20px;
-  margin: 2rem auto 4rem;
-  border: 1px solid #000;
-  text-align: center;
+  flex-grow: 1;
+  margin: 2rem auto;
   background-color: #fff;
-  flex: 1;
 }
 
-footer {
-  text-align: center;
-  background-color: #7FE2B2;
-  color: white;
-  padding: 1rem 0;
-  flex-shrink: 0;
+.dialog-box {
+  padding: 20px;
+  border: rgb(238, 238, 238) 2px solid;
+  border-radius: 0.8em;
 }
 
-.navbar-custom, .footer-custom {
-  background-color: #7FE2B2 !important;
-  color: white !important;
+.btn {
+  color: #ffffff !important;
+  background: #61e6a6 !important;
+  font-weight: bolder !important;
+  width: 100%;
 }
 
-.navbar-custom .navbar-brand, 
-.navbar-custom .nav-link, 
-.footer-custom a {
-  color: white !important;
+.btn:hover {
+  background: #6effb9 !important;
+}
+
+.btn-delete {
+  color: #ffffff !important;
+  background: #db4141 !important;
+  font-weight: bolder !important;
+  width: 100%;
+}
+
+.btn-delete:hover {
+  background: #eb3d3d !important;
+}
+
+.secondary {
+  background: #276145 !important;
+  font-weight: bolder !important;
+  width: 100%;
+}
+
+.secondary:hover {
+  background: #39835f !important;
 }
