@@ -84,22 +84,43 @@
       <label for="project">Choose a project:</label>
       <select name="project" id="project">
         <% projs.forEach(function(e) { %>
-        <option value="<%= e.id %>"><%= e.title %></option>
-        <% }); %>
-      </select>
-      <input type="submit" value="Submit">
-    </form>
+        <h1>Existing Projects</h1>
 
-    <form action="/deleteProject" method="post">
-      <label for="deleteProject">Delete a project:</label>
-      <select name="projectId" id="deleteProject">
-        <% projs.forEach(function(e) { %>
-        <option value="<%= e.id %>"><%= e.title %></option>
-        <% }); %>
-      </select>
-      <input type="submit" value="Delete">
-    </form>
-    <button onclick="showDefaultContent()">Back</button>
+        <form action="/home" method="post">
+          <label for="project">Choose a project:</label>
+          <select name="project" id="project">
+            <% projs.forEach(function(e) { %>
+            <option value="<%= e.id %>"><%= e.title %></option>
+            <% }); %>
+          </select>
+          <input type="submit" value="Submit">
+        </form>
+
+        <form action="/deleteProject" method="post">
+          <label for="deleteProject">Delete a project:</label>
+          <select name="projectId" id="deleteProject">
+            <% projs.forEach(function(e) { %>
+            <% }); %>
+          </select>
+          <input type="submit" value="Submit">
+        </form>
+
+        <form action="/deleteProject" method="post">
+          <label for="deleteProject">Delete a project:</label>
+          <select name="projectId" id="deleteProject">
+            <% projs.forEach(function(e) { %>
+            <option value="<%= e.id %>"><%= e.title %></option>
+            <% }); %>
+          </select>
+          <input type="submit" value="Delete">
+        </form>
+        <button onclick="showDefaultContent()">Back</button>
+  </div>
+  <% }); %>
+  </select>
+  <input type="submit" value="Delete">
+  </form>
+  <button onclick="showDefaultContent()">Back</button>
   </div>
 
   <script src="/public/javascript/home.js"></script>
