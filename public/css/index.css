@@ -5,51 +5,52 @@ html {
 body {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  margin-top: 56px;
+  min-height: 300vh;
+  margin-top: 96px; 
 }
 
 main {
   flex: 1;
 }
 
-.navbar-custom,
-.footer-custom {
-  background-color: #7fe2b2 !important;
+.navbar-custom, .footer-custom {
+  background-color: #7FE2B2 !important;
   color: white !important;
   transition: background-color 0.5s; /* Smooth transition for background color */
 }
 
-.navbar-custom .navbar-brand,
-.navbar-custom .nav-link,
+.navbar-custom .navbar-brand, 
+.navbar-custom .nav-link, 
 .footer-custom a {
   color: white !important;
   transition: background-color 0.5s; /* Smooth transition for background color */
 }
 
-/* Dark mode styles */
-body.dark-mode {
-  background-color: #121212;
-  color: #fff;
-}
 
-body.dark-mode .navbar-custom,
-body.dark-mode .footer-custom {
-  background-color: #801d4d !important;
-  color: white !important;
-}
 
-body.dark-mode .navbar-custom .navbar-brand,
-body.dark-mode .navbar-custom .nav-link,
-body.dark-mode .footer-custom a {
-  color: white !important;
-}
-.navbar-brand.dark-mode,
-.nav-link.dark-mode {
-  color: #fff !important;
-}
+  /* Dark mode styles */
+  body.dark-mode {
+    background-color: #121212;
+    color: #fff;
+  }
 
-/* Dark mode button styles */
+  body.dark-mode .navbar-custom,
+  body.dark-mode .footer-custom {
+    background-color: #801d4d !important;
+    color: white !important;
+  }
+  
+  body.dark-mode .navbar-custom .navbar-brand,
+  body.dark-mode .navbar-custom .nav-link,
+  body.dark-mode .footer-custom a {
+    color: white !important;
+  }
+  .navbar-brand.dark-mode,
+  .nav-link.dark-mode {
+    color: #fff !important;
+  }
+
+  /* Dark mode button styles */
 #darkModeToggle {
   position: fixed;
   bottom: 20px;
@@ -72,12 +73,12 @@ body.dark-mode .footer-custom a {
   background-color: #801d4d;
 }
 
-html[style='display: none;'] {
+html[style="display: none;"] {
   display: block;
   visibility: hidden;
 }
 
-html.dark-mode[style='display: none;'],
+html.dark-mode[style="display: none;"],
 html:not(.dark-mode) body {
   visibility: visible;
 }
@@ -104,13 +105,13 @@ footer {
   text-align: center;
 }
 
-body,
-html {
+body, html {
   margin: 0;
-  padding: 0;
+  padding: 100;
 }
 
-/* Class to hide body during page load */
-.hide-body {
-  visibility: hidden;
-}
+
+    /* Class to hide body during page load */
+    .hide-body {
+      visibility: hidden;
+    }
