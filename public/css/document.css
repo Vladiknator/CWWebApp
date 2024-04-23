@@ -29,7 +29,7 @@ body {
   border: rgb(238, 238, 238) 2px solid;
   border-radius: 0.8em;
   flex-grow: 1;
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 
 .entry.highlight {
