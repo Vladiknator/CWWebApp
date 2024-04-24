@@ -222,7 +222,7 @@ app.get('/profile', sessionCheck, (req, res) => {
 });
 
 // Render about page
-app.get('/about', sessionCheck, (req, res) => {
+app.get('/about', (req, res) => {
   res.render('about', { user: req.session.username });
 });
 
