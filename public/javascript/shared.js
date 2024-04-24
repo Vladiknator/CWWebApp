@@ -54,6 +54,9 @@ async function getNotesData() {
 // Load collection into collection pane
 function loadCollection(i) {
   const coll = noteJSON[i];
+  if (!coll) {
+    return;
+  }
   collIndex = i;
   const title = document.getElementById('collection-title');
   title.textContent = coll.title;

@@ -13,7 +13,7 @@
 <body>
   <script src="/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
   <script src="https://kit.fontawesome.com/868fba207c.js" crossorigin="anonymous"></script>
-  <div class="container-fluid h-100">
+  <div class="container-fluid vh-100">
     <div class="row p-3 h-100">
       <div class="<%= doc.include_notes ? 'col-8' : 'col' %>" id="grid-editor">
         <div id="editor-form">
@@ -28,7 +28,7 @@
         </div>
       </div>
       <% if (doc.include_notes) {%>
-      <div class="col" id="grid-coll">
+      <div class="col h-100" id="grid-coll">
         <div id="current-collection">
           <div class="buttons">
 
